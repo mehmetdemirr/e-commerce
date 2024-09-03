@@ -5,15 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Product extends Model
+class Business extends Model
 {
     use HasFactory;
 
-    protected $fillable = ['name', 'description', 'price', 'quantity', 'user_id'];
+    protected $fillable = [
+        'user_id', 'iban', 'address', 'contact_info',
+    ];
 
-    /**
-     * Get the user that owns the product.
-     */
     public function user()
     {
         return $this->belongsTo(User::class);

@@ -5,62 +5,65 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Models\Product;
+use Illuminate\Http\Request;
+use App\Interfaces\ProductInterface;
+use App\Interfaces\ProductRepositoryInterface;
 
 class ProductController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
+    protected $productRepository;
+
+    public function __construct(ProductRepositoryInterface $productRepository)
+    {
+        $this->productRepository = $productRepository;
+    }
+
     public function index()
     {
-        //
+        $products = $this->productRepository->all();
+        return response()->json($products);
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
+    public function show($id)
     {
-        //
+        $product = $this->productRepository->find($id);
+        return response()->json($product);
     }
 
-    /**
-     * Store a newly created resource in storage.
-     */
-    public function store(StoreProductRequest $request)
+    public function store(Request $request)
     {
-        //
+        $validatedData = $request->validate([
+            'name' => 'required|string|max:255',
+            'description' => 'nullable|string',
+            'price' => 'required|numeric',
+            'quantity' => 'required|integer',
+        ]);
+
+        // Kullanıcının ID'sini ekle
+        $validatedData['user_id'] = $request->user()->id; // veya auth()->user()->id
+
+        $product = $this->productRepository->create($validatedData);
+        return response()->json($product, 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(Product $product)
+    public function update(Request $request, $id)
     {
-        //
+        $validatedData = $request->validate([
+            'name' => 'sometimes|string|max:255',
+            'description' => 'nullable|string',
+            'price' => 'sometimes|numeric',
+            'quantity' => 'sometimes|integer',
+        ]);
+
+        // Kullanıcı ID'si güncelleme sırasında genellikle değiştirilmez
+        // Ancak, siz gerekli görürseniz burada da ekleyebilirsiniz
+        $product = $this->productRepository->update($id, $validatedData);
+        return response()->json($product);
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(Product $product)
+    public function destroy($id)
     {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(UpdateProductRequest $request, Product $product)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(Product $product)
-    {
-        //
+        $this->productRepository->delete($id);
+        return response()->json(null, 204);
     }
 }
