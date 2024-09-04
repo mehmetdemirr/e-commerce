@@ -3,6 +3,8 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Contracts\Validation\Validator;
+use Illuminate\Validation\ValidationException;
 
 class UpdateProductImageRequest extends BaseRequest
 {
@@ -22,19 +24,23 @@ class UpdateProductImageRequest extends BaseRequest
     public function rules(): array
     {
         return [
-            'product_id' => 'sometimes|exists:products,id',
-            'image_url' => 'sometimes|url|max:255',
-            'is_main' => 'sometimes|boolean',
+            'images' => 'required|array',
+            'images.*.id' => 'required|exists:product_images,id',
+            'images.*.image_url' => 'required|url',
+            'images.*.is_main' => 'nullable|boolean'
         ];
     }
 
     public function messages(): array
     {
         return [
-            'product_id.exists' => 'Belirtilen ürün bulunamadı.',
-            'image_url.url' => 'Geçerli bir resim URL\'si giriniz.',
-            'image_url.max' => 'Resim URL\'si en fazla 255 karakter olabilir.',
-            'is_main.boolean' => 'Ana resim bilgisi doğru formatta olmalıdır (true veya false).',
+            'images.required' => 'At least one image is required.',
+            'images.array' => 'Images must be an array.',
+            'images.*.id.required' => 'Image ID is required.',
+            'images.*.id.exists' => 'The specified image does not exist.',
+            'images.*.image_url.required' => 'Image URL is required.',
+            'images.*.image_url.url' => 'Image URL must be a valid URL.',
+            'images.*.is_main.boolean' => 'Is main must be a boolean value.',
         ];
     }
 }

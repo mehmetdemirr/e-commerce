@@ -21,7 +21,20 @@ class ProductImageRepository implements ProductImageRepositoryInterface
 
     public function find($id)
     {
-        return $this->model->findOrFail($id);
+        try {
+            // ProductImage modelinden belirli bir ID'ye sahip resmi bul
+            $productImage = $this->model->find($id);    
+    
+            // Eğer model bulunamazsa, uygun bir hata mesajı döndür
+            if (!$productImage) {
+                return null;
+            }
+            return $productImage;
+    
+        } catch (\Exception $e) {
+            // Hata durumunda uygun bir yanıt döndür
+            return null;
+        }
     }
 
     public function create(array $attributes)
@@ -38,7 +51,29 @@ class ProductImageRepository implements ProductImageRepositoryInterface
 
     public function delete($id)
     {
-        $productImage = $this->find($id);
-        $productImage->delete();
+        try {
+            // ProductImage modelinden belirli bir ID'ye sahip resmi bul
+            $productImage = $this->find($id);
+    
+            // Eğer model bulunamazsa, uygun bir hata mesajı döndür
+            if (!$productImage) {
+                return false;
+            }
+    
+            // Modeli sil ve başarılı bir yanıt döndür
+            $productImage->delete();
+            return true;
+    
+        } catch (\Exception $e) {
+            // Hata durumunda uygun bir yanıt döndür
+            return false;
+        }
+    }
+
+    public function findExistingMainImages($productId)
+    {
+        return $this->model->where('product_id', $productId)
+                            ->where('is_main', true)
+                            ->get();
     }
 }

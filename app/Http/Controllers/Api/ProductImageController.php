@@ -32,30 +32,51 @@ class ProductImageController extends Controller
     public function show($id)
     {
         $productImage = $this->productImageRepository->find($id);
-        return response()->json([
-            'success' => true,
-            'data' => $productImage,
-            'errors' => null,
-            'message' => null
-        ], 200);
+        if ($productImage != null) 
+        {
+            return response()->json([
+                'success' => true,
+                'data' => $productImage,
+                'errors' => null,
+                'message' => null
+            ], 200);
+        }else{
+            return response()->json([
+                'success' => false,
+                'data' => null,
+                'errors' => null,
+                'message' => "product image bulunamadı"
+            ], 400);
+        }
+        
     }
 
     public function store(StoreProductImageRequest $request)
     {
         $validatedData = $request->validated();
+        $product_id = $validatedData['product_id'];
+        $images = $validatedData['images'];
 
-        // Start a database transaction
+        // Add product_id to each image
+        foreach ($images as &$image) {
+            $image['product_id'] = $product_id;
+        }
+
         DB::beginTransaction();
 
         try {
-            $images = $validatedData['images'];
+            // Check for existing main images
+            $existingMainImages = $this->productImageRepository->findExistingMainImages($product_id);
             $mainImages = array_filter($images, function ($image) {
                 return isset($image['is_main']) && $image['is_main'];
             });
 
-            if (count($mainImages) > 1) {
+
+            if (count($existingMainImages) + count($mainImages) > 1) {
                 throw new \Exception('Only one image can be marked as main.');
             }
+
+
 
             foreach ($images as $image) {
                 $this->productImageRepository->create($image);
@@ -82,26 +103,83 @@ class ProductImageController extends Controller
         }
     }
 
+
     public function update(UpdateProductImageRequest $request, $id)
     {
         $validatedData = $request->validated();
-        $productImage = $this->productImageRepository->update($id, $validatedData);
-        return response()->json([
-            'success' => true,
-            'data' => $productImage,
-            'errors' => null,
-            'message' => 'Product image updated successfully.'
-        ], 200);
+        $product_id = $validatedData['product_id'];
+        $images = $validatedData['images'];
+
+        // Add product_id to each image
+        foreach ($images as &$image) {
+            $image['product_id'] = $product_id;
+        }
+
+        DB::beginTransaction();
+
+        try {
+            // Fetch existing images for the given product
+            $existingImages = $this->productImageRepository->findExistingMainImages($product_id);
+            $existingMainImages = $existingImages->where('is_main', true)->all();
+            $mainImages = array_filter($images, function ($image) {
+                return isset($image['is_main']) && $image['is_main'];
+            });
+
+            // Ensure only one main image
+            if (count($existingMainImages) + count($mainImages) > 1) {
+                throw new \Exception('Only one image can be marked as main.');
+            }
+
+            // Update existing images
+            foreach ($images as $image) {
+                $existingImage = $existingImages->firstWhere('id', $image['id']);
+                if ($existingImage) {
+                    $existingImage->update($image);
+                } else {
+                    throw new \Exception('Image with ID ' . $image['id'] . ' not found.');
+                }
+            }
+
+            DB::commit();
+
+            return response()->json([
+                'success' => true,
+                'data' => $images,
+                'errors' => null,
+                'message' => 'Product images updated successfully.'
+            ], 200);
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+
+            return response()->json([
+                'success' => false,
+                'data' => null,
+                'errors' => ['images' => [$e->getMessage()]],
+                'message' => 'Failed to update product images.'
+            ], 400);
+        }
     }
 
     public function destroy($id)
     {
-        $this->productImageRepository->delete($id);
-        return response()->json([
-            'success' => true,
-            'data' => null,
-            'errors' => null,
-            'message' => 'Product image deleted successfully.'
-        ], 204);
+        $productImage = $this->productImageRepository->delete($id);
+        if ($productImage) {
+           return response()->json([
+                'success'=> true,
+                'data' => null,
+                'errors' => null,
+                'message' => "product image silindi !",
+                ], 200
+            );
+        } else {
+            return response()->json([
+                'success'=> false,
+                'data' => null,
+                'errors' => null,
+                'message' =>  "Böyle bir product image  bulunmamadı !",
+                ], 400
+            );
+        }
     }
 }

@@ -110,7 +110,7 @@ class CategoryController extends Controller
                 'success'=> true,
                 'data' => null,
                 'errors' => null,
-                'message' => "Brand silindi !",
+                'message' => "category silindi !",
                 ], 200
             );
         } else {
