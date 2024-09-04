@@ -2,11 +2,15 @@
 
 namespace App\Interfaces;
 
-interface ProductRepositoryInterface
+interface BrandRepositoryInterface
 {
     public function all($page, $perPage);
+
     public function find($id);
-    public function create(array $attributes);
-    public function update($id, array $attributes);
+
+    public function create(array $data);
+
+    public function update($id, array $data);
+
     public function delete($id);
 }

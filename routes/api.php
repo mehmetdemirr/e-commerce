@@ -1,11 +1,12 @@
 <?php
 
 use App\Http\Controllers\Api\Auth\AuthController;
+use App\Http\Controllers\Api\BrandController;
 use App\Http\Controllers\Api\Auth\ForgotPasswordController;
 use App\Http\Controllers\Api\Auth\PasswordResetController;
 use App\Http\Controllers\Api\Auth\ResetPasswordController;
+use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\UserController;
-use App\Http\Controllers\ProductController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Cache\RateLimiting\Limit;
@@ -28,6 +29,14 @@ Route::middleware(["log"])->group(function () {
             Route::post('/', [ProductController::class, 'store']);
             Route::put('/{id}', [ProductController::class, 'update']);
             Route::delete('/{id}', [ProductController::class, 'destroy']);
+        });
+
+        Route::prefix('brands')->group(function () {
+            Route::get('/', [BrandController::class, 'index']);
+            Route::get('/{id}', [BrandController::class, 'show']);
+            Route::post('/', [BrandController::class, 'store']);
+            Route::put('/{id}', [BrandController::class, 'update']);
+            Route::delete('/{id}', [BrandController::class, 'destroy']);
         });
         
         

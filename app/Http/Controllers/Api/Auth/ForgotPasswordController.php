@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Api\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\api\ForgotPasswordRequest;
-use App\Http\Requests\Api\PasswordForgotRequest;
+use App\Http\Requests\ForgotPasswordRequest;
+use App\Http\Requests\PasswordForgotRequest;
 use App\Models\User;
 use App\Notifications\ResetPasswordNotification;
 use Illuminate\Http\Request;
