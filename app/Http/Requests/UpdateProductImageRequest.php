@@ -4,14 +4,14 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateProductImageRequest extends FormRequest
+class UpdateProductImageRequest extends BaseRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,19 @@ class UpdateProductImageRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'product_id' => 'sometimes|exists:products,id',
+            'image_url' => 'sometimes|url|max:255',
+            'is_main' => 'sometimes|boolean',
+        ];
+    }
+
+    public function messages(): array
+    {
+        return [
+            'product_id.exists' => 'Belirtilen ürün bulunamadı.',
+            'image_url.url' => 'Geçerli bir resim URL\'si giriniz.',
+            'image_url.max' => 'Resim URL\'si en fazla 255 karakter olabilir.',
+            'is_main.boolean' => 'Ana resim bilgisi doğru formatta olmalıdır (true veya false).',
         ];
     }
 }

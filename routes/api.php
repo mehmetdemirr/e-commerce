@@ -5,7 +5,9 @@ use App\Http\Controllers\Api\BrandController;
 use App\Http\Controllers\Api\Auth\ForgotPasswordController;
 use App\Http\Controllers\Api\Auth\PasswordResetController;
 use App\Http\Controllers\Api\Auth\ResetPasswordController;
+use App\Http\Controllers\Api\CategoryController;
 use App\Http\Controllers\Api\ProductController;
+use App\Http\Controllers\Api\ProductImageController;
 use App\Http\Controllers\Api\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
@@ -37,6 +39,22 @@ Route::middleware(["log"])->group(function () {
             Route::post('/', [BrandController::class, 'store']);
             Route::put('/{id}', [BrandController::class, 'update']);
             Route::delete('/{id}', [BrandController::class, 'destroy']);
+        });
+
+        Route::prefix('categories')->group(function () {
+            Route::get('/', [CategoryController::class, 'index']);
+            Route::get('/{id}', [CategoryController::class, 'show']);
+            Route::post('/', [CategoryController::class, 'store']);
+            Route::put('/{id}', [CategoryController::class, 'update']);
+            Route::delete('/{id}', [CategoryController::class, 'destroy']);
+        });
+
+        Route::prefix('product-images')->group(function () {
+            Route::get('/', [ProductImageController::class, 'index']);
+            Route::get('/{id}', [ProductImageController::class, 'show']);
+            Route::post('/', [ProductImageController::class, 'store']);
+            Route::put('/{id}', [ProductImageController::class, 'update']);
+            Route::delete('/{id}', [ProductImageController::class, 'destroy']);
         });
         
         

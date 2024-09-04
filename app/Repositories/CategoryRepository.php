@@ -2,29 +2,28 @@
 
 namespace App\Repositories;
 
-use App\Interfaces\ProductRepositoryInterface;
-use App\Models\Product;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
+use App\Interfaces\CategoryRepositoryInterface;
+use App\Models\Category;
 
-class ProductRepository implements ProductRepositoryInterface
+class CategoryRepository implements CategoryRepositoryInterface
 {
     protected $model;
 
-    public function __construct(Product $product)
+    public function __construct(Category $category)
     {
-        $this->model = $product;
+        $this->model = $category;
     }
 
     public function all($page = 1,$perPage = 10)
     {
-        return $this->model->with(['images' => function($query) {
-            $query->where('is_main', true)->first(); // or use `limit(1)` if you want to get just the first image
-        }])->get();
+        //burda alt alta kategori olacaksa parent id null olanları getirmesin dedim 
+        // return $this->model->with('children.children')->whereNull("parent_id")->paginate($perPage, ['*'], 'page', $page);
+        return $this->model->with('children.children')->paginate($perPage, ['*'], 'page', $page);
     }
 
     public function find($id)
     {
-        return $this->model->with('images')->find($id);
+        return $this->model->find($id);
     }
 
     public function create(array $attributes)

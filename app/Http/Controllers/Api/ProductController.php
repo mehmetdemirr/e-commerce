@@ -60,8 +60,10 @@ class ProductController extends Controller
 
     public function store(StoreProductRequest $request)
     {
+
         $validatedData = $request->validated();
         $validatedData['user_id'] = $request->user()->id;
+                
         $product = $this->productRepository->create($validatedData);
         return response()->json([
             'success'=> true,
