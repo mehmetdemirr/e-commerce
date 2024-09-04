@@ -20,6 +20,11 @@ class ProductImageController extends Controller
 
     public function index()
     {
+
+        // $existingImages = $this->productImageRepository->findExistingMainImages(1);
+        // $existingMainImages = $existingImages->where('is_main', true)->all();
+        // dd(count($existingMainImages));
+
         $productImages = $this->productImageRepository->all();
         return response()->json([
             'success' => true,
@@ -107,19 +112,18 @@ class ProductImageController extends Controller
     public function update(UpdateProductImageRequest $request, $id)
     {
         $validatedData = $request->validated();
-        $product_id = $validatedData['product_id'];
         $images = $validatedData['images'];
 
         // Add product_id to each image
         foreach ($images as &$image) {
-            $image['product_id'] = $product_id;
+            $image['product_id'] = $id;
         }
 
         DB::beginTransaction();
 
         try {
             // Fetch existing images for the given product
-            $existingImages = $this->productImageRepository->findExistingMainImages($product_id);
+            $existingImages = $this->productImageRepository->findExistingMainImages($id);
             $existingMainImages = $existingImages->where('is_main', true)->all();
             $mainImages = array_filter($images, function ($image) {
                 return isset($image['is_main']) && $image['is_main'];
@@ -132,12 +136,14 @@ class ProductImageController extends Controller
 
             // Update existing images
             foreach ($images as $image) {
-                $existingImage = $existingImages->firstWhere('id', $image['id']);
-                if ($existingImage) {
-                    $existingImage->update($image);
-                } else {
-                    throw new \Exception('Image with ID ' . $image['id'] . ' not found.');
+                // Find the existing image model
+                $productImage = $this->productImageRepository->find($image["id"]);
+
+                if (!$productImage) {
+                    throw new \Exception('Image not found.');
                 }
+                // Update the model with new data
+                $productImage->update($image);
             }
 
             DB::commit();
