@@ -2,26 +2,28 @@
 
 namespace App\Policies;
 
-use App\Models\Review;
+use App\Models\Order;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
 
-class ReviewPolicy
+class OrderPolicy
 {
     /**
      * Determine whether the user can view any models.
      */
     public function viewAny(User $user): bool
     {
-        return true;
+        // Kullanıcının tüm siparişleri görüntüleme iznine sahip olup olmadığını kontrol eder.
+        return $user->hasRole('admin'); // Örneğin, sadece adminler görebilir
     }
 
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, Review $review): bool
+    public function view(User $user, Order $order): bool
     {
-        return true;
+        // Kullanıcının belirli bir siparişi görüntüleme iznine sahip olup olmadığını kontrol eder.
+        return $user->id === $order->user_id || $user->hasRole('admin');
     }
 
     /**
@@ -35,7 +37,7 @@ class ReviewPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Review $review): bool
+    public function update(User $user, Order $order): bool
     {
         return true;
     }
@@ -43,7 +45,7 @@ class ReviewPolicy
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Review $review): bool
+    public function delete(User $user, Order $order): bool
     {
         return true;
     }
@@ -51,7 +53,7 @@ class ReviewPolicy
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, Review $review): bool
+    public function restore(User $user, Order $order): bool
     {
         return true;
     }
@@ -59,7 +61,7 @@ class ReviewPolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, Review $review): bool
+    public function forceDelete(User $user, Order $order): bool
     {
         return true;
     }

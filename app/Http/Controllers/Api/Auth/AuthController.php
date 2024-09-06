@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Auth;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
+use App\Interfaces\CardRepositoryInterface;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Support\Facades\Auth;
@@ -13,6 +14,15 @@ use Laravel\Sanctum\PersonalAccessToken;
 
 class AuthController extends Controller
 {
+
+    protected $cartRepository;
+
+    public function __construct(CardRepositoryInterface $cartRepository)
+    {
+        $this->cartRepository = $cartRepository;
+    }
+
+
     public function login(LoginRequest $request)
     {
         $credentials = $request->only('email', 'password');
@@ -55,6 +65,12 @@ class AuthController extends Controller
         // Eğer rol "admin" ise "user" rolünü ata (ilk başta admin olarak kayıt almak istemiyorum)
         if ($role === 'admin') {
             $role = 'user';
+        }
+
+        if($role === 'user')
+        {
+            // Kullanıcı oluşturulduktan sonra sepet oluştur
+            $this->cartRepository->createCart($user->id);
         }
 
         $user->assignRole($role);

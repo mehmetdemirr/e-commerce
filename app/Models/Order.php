@@ -6,22 +6,24 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Review extends Model
+class Order extends Model
 {
     use HasFactory, SoftDeletes;
 
-    protected $fillable = [
-        'user_id', 'product_id', 'rating', 'comment'
-    ];
+    protected $fillable = ['user_id','business_id', 'status', 'total'];
 
-    // İlişkiler
     public function user()
     {
         return $this->belongsTo(User::class);
     }
 
-    public function product()
+    public function business()
     {
-        return $this->belongsTo(Product::class);
+        return $this->belongsTo(Business::class);
+    }
+
+    public function items()
+    {
+        return $this->hasMany(OrderItem::class);
     }
 }

@@ -13,7 +13,9 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        // User::factory(10)->create();
+        $this->call([
+            RolesAndPermissionsSeeder::class,
+        ]);
 
        $user = User::factory()->create([
             'name' => 'Mehmet',
@@ -21,6 +23,19 @@ class DatabaseSeeder extends Seeder
         ]);
 
         $user->assignRole('admin');
+
+        $this->call([
+            CategorySeeder::class, //genel kategori ekle
+            BrandSeeder::class, //genele marka ekle
+            UserSeeder::class, //kullanıcı ekle
+            ProductSeeder::class, //ürün ekle
+            ProductImageSeeder::class, //ürünlere fotoğraf ekle
+            CartSeeder::class, //kullanıcıya sepet ekle
+            CartItemSeeder::class, //sepete item ekle
+            OrderSeeder::class, //sipariş oluştur
+            ReviewSeeder::class, //ürünlere yorum ekle
+            BusinessSeeder::class, //işletme ekle
+        ]); 
 
     }
 }

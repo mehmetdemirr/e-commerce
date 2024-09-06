@@ -19,7 +19,7 @@ return new class extends Migration
             $table->integer('quantity');
             $table->string('sku')->unique(); // SKU, benzersiz olmalıdır
             $table->unsignedBigInteger('category_id')->nullable(); // Kategoriler nullable olabilir
-            $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('business_id');
             $table->unsignedBigInteger('brand_id')->nullable(); // Marka nullable olabilir
             $table->decimal('discount', 5, 2)->nullable(); // Örnek: 99.99
             $table->decimal('shipping_cost', 8, 2)->nullable(); // Örnek: 99.99
@@ -30,9 +30,10 @@ return new class extends Migration
             $table->decimal('rating', 2, 1)->default(0.0); // Örnek: 4.5
             $table->enum('status', ['active', 'inactive'])->default('active');
             $table->timestamps(); 
+            $table->softDeletes();
 
             $table->foreign('category_id')->references('id')->on('categories')->onDelete('set null');
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
+            $table->foreign('business_id')->references('id')->on('businesses')->onDelete('cascade');
             $table->foreign('brand_id')->references('id')->on('brands')->onDelete('set null');
         });
     }

@@ -2,17 +2,20 @@
 
 namespace Database\Seeders;
 
-use App\Models\Brand;
+use App\Models\Order;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class BrandSeeder extends Seeder
+class OrderSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        Brand::factory()->count(10)->create();
+        Order::factory()
+            ->count(20)
+            ->withItems(3) // Her sipariş için 3 order items (yani ürün) oluşturur
+            ->create();
     }
 }

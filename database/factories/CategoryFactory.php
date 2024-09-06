@@ -9,15 +9,24 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class CategoryFactory extends Factory
 {
-    /**
-     * Define the model's default state.
-     *
-     * @return array<string, mixed>
-     */
-    public function definition(): array
+    public function definition()
     {
         return [
-            //
+            'name' => $this->faker->word(),
+            'description' => $this->faker->sentence(),
+            'parent_id' => null, // Varsayılan olarak üst kategori yok
         ];
+    }
+
+    /**
+     * Üst kategoriler oluşturmak için parent_id'yi ayarlayan state.
+     */
+    public function withParent($parentId)
+    {
+        return $this->state(function () use ($parentId) {
+            return [
+                'parent_id' => $parentId,
+            ];
+        });
     }
 }

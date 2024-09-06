@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Product extends Model
 {
-    use HasFactory;
+    use HasFactory ,SoftDeletes;
 
     protected $fillable = [
         'name',
@@ -16,7 +17,7 @@ class Product extends Model
         'quantity',
         'sku',
         'category_id',
-        'user_id',
+        'business_id',
         'brand_id',
         'discount',
         'shipping_cost',
@@ -31,9 +32,9 @@ class Product extends Model
     /**
      * Get the user that owns the product.
      */
-    public function user()
+    public function business()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(Business::class);
     }
 
     public function category()

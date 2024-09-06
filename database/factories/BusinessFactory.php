@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -16,8 +17,15 @@ class BusinessFactory extends Factory
      */
     public function definition(): array
     {
-        return [
-            //
-        ];
+       // Yeni bir kullanıcı oluşturup ona 'company' rolü atıyoruz
+       $user = User::factory()->create();
+       $user->assignRole('company');
+
+       return [
+           'user_id' => $user->id,
+           'iban' => $this->faker->iban(),
+           'address' => $this->faker->address(),
+           'contact_info' => $this->faker->phoneNumber(),
+       ];
     }
 }

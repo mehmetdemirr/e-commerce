@@ -17,7 +17,8 @@ class BrandFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'name' => $this->faker->company(), // Marka ismi olarak şirket adı kullan
+            'description' => $this->faker->sentence(), // Kısa bir açıklama
         ];
     }
 }

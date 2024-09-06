@@ -5,7 +5,9 @@ use App\Http\Controllers\Api\BrandController;
 use App\Http\Controllers\Api\Auth\ForgotPasswordController;
 use App\Http\Controllers\Api\Auth\PasswordResetController;
 use App\Http\Controllers\Api\Auth\ResetPasswordController;
+use App\Http\Controllers\Api\CartController;
 use App\Http\Controllers\Api\CategoryController;
+use App\Http\Controllers\Api\OrderController;
 use App\Http\Controllers\Api\ProductController;
 use App\Http\Controllers\Api\ProductImageController;
 use App\Http\Controllers\Api\UserController;
@@ -55,6 +57,18 @@ Route::middleware(["log"])->group(function () {
             Route::post('/', [ProductImageController::class, 'store']);
             Route::put('/{id}', [ProductImageController::class, 'update']);
             Route::delete('/{id}', [ProductImageController::class, 'destroy']);
+        });
+
+        Route::prefix('/carts')->group(function () {
+            Route::get('/', [CartController::class, 'index']); // Kullanıcının sepetini getir
+            Route::post('/', [CartController::class, 'store']); // Sepete ürün ekle
+            Route::delete('/{itemId}', [CartController::class, 'destroy']); // Sepetten ürün çıkar
+        });
+
+        Route::prefix('/orders')->group(function () {
+            Route::get('/', [OrderController::class, 'getOrdersByAuthenticatedUser']);
+            Route::post('/', [OrderController::class, 'create']);
+            Route::get('/user/{userId}', [OrderController::class, 'getOrdersByUserId']);
         });
         
         
