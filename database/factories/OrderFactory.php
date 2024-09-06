@@ -16,8 +16,11 @@ class OrderFactory extends Factory
         return [
             'user_id' => User::factory(),
             'business_id' => $this->faker->numberBetween(1, 10), // Varsayılan bir işyeri ID'si
-            'status' => $this->faker->randomElement(['pending', 'completed', 'canceled']),
+            'order_status_id' => $this->faker->numberBetween(1, 7),
+            'payment_status_id' => $this->faker->numberBetween(1, 5), 
             'total' => $this->faker->numberBetween(100, 500),
+            'payment_method' => $this->faker->randomElement(['credit_card', 'paypal', 'cod']), // Ödeme yöntemi örnekleri
+            'payment_reference' => $this->faker->uuid(), // Ödeme referansı için UUID
             'deleted_at' => null, // Soft delete için
         ];
     }

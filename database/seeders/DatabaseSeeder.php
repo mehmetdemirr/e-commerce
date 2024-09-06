@@ -36,6 +36,8 @@ class DatabaseSeeder extends Seeder
         $company->assignRole('admin');
 
         $this->call([
+            OrderStatusSeeder::class,
+            PaymentStatusSeeder::class,
             BusinessSeeder::class, //işletme ekle
             CategorySeeder::class, //genel kategori ekle
             BrandSeeder::class, //genele marka ekle

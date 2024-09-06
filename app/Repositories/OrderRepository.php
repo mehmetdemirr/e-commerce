@@ -11,15 +11,20 @@ use Illuminate\Support\Facades\Validator;
 class OrderRepository implements OrderRepositoryInterface
 {
 
+    /**
+     * Create an order based on the cart of a user.
+     *
+     * @param int $userId
+     * @return array|null
+     */
     public function createOrder($userId)
     {
         $cart = Cart::where('user_id', $userId)->first();
-        if (!$cart) 
-        {
-            return null;
+        if (!$cart) {
+            return null; // Sepet bulunamadı
         }
+
         $cartItems = $cart->items; // Sepetteki ürünleri al
-        $total = 0;
         $ordersByBusiness = [];
 
         // Sepet ürünlerini mağazalara göre grupla
@@ -45,8 +50,11 @@ class OrderRepository implements OrderRepositoryInterface
             $order = Order::create([
                 'user_id' => $userId,
                 'business_id' => $businessId,
-                'status' => 'pending',
-                'total' => $data['total']
+                'order_status_id' => 1, 
+                'payment_status_id' => 1,
+                'total' => $data['total'],
+                'payment_method' => 'credit_card', // Varsayılan ödeme yöntemi
+                'payment_reference' => null, // Varsayılan ödeme referansı
             ]);
 
             foreach ($data['items'] as $item) {
@@ -60,16 +68,19 @@ class OrderRepository implements OrderRepositoryInterface
             $orders[] = $order;
         }
 
-        // Sepet öğelerini zorla sil (force delete)
-        foreach ($cartItems as $item) {
-            //TODO : burda force delete de yapabilirim 
-            $item->delete(); // Sepetteki itemları sil
-        }
-        // $cart->items()->delete(); böyle de yapabiliriz
+        // Sepet öğelerini sil
+        $cart->items()->delete();
 
         return $orders;
     }
 
+    /**
+     * Update an existing order.
+     *
+     * @param int $orderId
+     * @param array $data
+     * @return \App\Models\Order|bool
+     */
     public function updateOrder(int $orderId, array $data)
     {
         $order = Order::find($orderId);
@@ -84,13 +95,29 @@ class OrderRepository implements OrderRepositoryInterface
         return $order;
     }
 
+    /**
+     * Get all orders for a specific user.
+     *
+     * @param int $userId
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
     public function getOrdersByAuthenticatedUser($userId)
     {
-        return Order::where('user_id', $userId)->with('items.product')->get();
+        return Order::where('user_id', $userId)
+            ->with('items.product', 'orderStatus', 'paymentStatus')
+            ->get();
     }
 
+    /**
+     * Get all orders for a specific user by user ID.
+     *
+     * @param int $userId
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
     public function getOrdersByUserId($userId)
     {
-        return Order::where('user_id', $userId)->with('items.product')->get();
+        return Order::where('user_id', $userId)
+            ->with('items.product', 'orderStatus', 'paymentStatus')
+            ->get();
     }
 }
