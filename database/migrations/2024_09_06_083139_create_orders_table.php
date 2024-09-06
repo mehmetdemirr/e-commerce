@@ -17,6 +17,9 @@ return new class extends Migration
             $table->foreignId('business_id')->constrained()->onDelete('cascade'); //işletme
             $table->string('status')->default('pending'); // Sipariş durumu (pending, shipped, delivered)
             $table->decimal('total', 10, 2); // Sipariş toplam tutarı
+            $table->string('payment_method')->default('cod'); 
+            $table->string('payment_status')->default('pending');
+            $table->string('payment_reference')->nullable();
             $table->timestamps();
             $table->softDeletes();
         });

@@ -2,10 +2,9 @@
 
 namespace App\Http\Requests;
 
-use App\Http\Requests\BaseRequest;
 use Illuminate\Foundation\Http\FormRequest;
 
-class LoginRequest extends BaseRequest
+class UpdateOrderRequest extends BaseRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -23,18 +22,16 @@ class LoginRequest extends BaseRequest
     public function rules()
     {
         return [
-            'email' => 'required|email',
-            'password' => 'required|string',
+            //TODO status güncelle 
+            'status' => 'required|string|in:pending,completed,canceled', // Durum değerleri örnek
         ];
     }
 
     public function messages()
     {
         return [
-            'email.required' => 'Email address is required.',
-            'email.email' => 'Please provide a valid email address.',
-            'email.exists' => 'The email address does not exist in our records.',
-            'password.required' => 'Password is required.',
+            'status.required' => 'Sipariş durumu belirtilmelidir.',
+            'status.in' => 'Geçersiz sipariş durumu.',
         ];
     }
 }

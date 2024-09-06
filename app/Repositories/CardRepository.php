@@ -18,6 +18,20 @@ class CardRepository implements CardRepositoryInterface
         return Cart::create(['user_id' => $userId]);
     }
 
+    public function updateCartItemQuantity($itemId, $quantity)
+    {
+        $cartItem = CartItem::find($itemId);
+
+        if ($cartItem) {
+            $cartItem->quantity = $quantity;
+            $cartItem->save();
+
+            return $cartItem;
+        }
+
+        return null;
+    }
+
     public function addItemToCart($cartId, $productId, $quantity)
     {
         $cart = Cart::find($cartId);
@@ -29,8 +43,13 @@ class CardRepository implements CardRepositoryInterface
 
     public function removeItemFromCart($cartItemId)
     {
-        $cartItem = CartItem::findOrFail($cartItemId);
-        $cartItem->delete();
+        $cartItem = CartItem::find($cartItemId);
+        if ($cartItem) 
+        {
+            $cartItem->delete();
+            return true;
+        }
+        return false;
     }
 
     public function clearCart($cartId)

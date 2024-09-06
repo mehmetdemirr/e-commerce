@@ -27,7 +27,7 @@ Route::middleware(["log"])->group(function () {
         Route::get('user', [UserController::class, 'user']);
         Route::put('user/update', [UserController::class, 'update']);
 
-        Route::prefix('products')->group(function () {
+        Route::prefix('products')->group(function () {  //ürünler
             Route::get('/', [ProductController::class, 'index']);
             Route::get('/{id}', [ProductController::class, 'show']);
             Route::post('/', [ProductController::class, 'store']);
@@ -35,7 +35,7 @@ Route::middleware(["log"])->group(function () {
             Route::delete('/{id}', [ProductController::class, 'destroy']);
         });
 
-        Route::prefix('brands')->group(function () {
+        Route::prefix('brands')->group(function () { //markalar
             Route::get('/', [BrandController::class, 'index']);
             Route::get('/{id}', [BrandController::class, 'show']);
             Route::post('/', [BrandController::class, 'store']);
@@ -43,7 +43,7 @@ Route::middleware(["log"])->group(function () {
             Route::delete('/{id}', [BrandController::class, 'destroy']);
         });
 
-        Route::prefix('categories')->group(function () {
+        Route::prefix('categories')->group(function () { //kategoriler
             Route::get('/', [CategoryController::class, 'index']);
             Route::get('/{id}', [CategoryController::class, 'show']);
             Route::post('/', [CategoryController::class, 'store']);
@@ -51,7 +51,7 @@ Route::middleware(["log"])->group(function () {
             Route::delete('/{id}', [CategoryController::class, 'destroy']);
         });
 
-        Route::prefix('product-images')->group(function () {
+        Route::prefix('product-images')->group(function () { //ürün fotoğrafları
             Route::get('/', [ProductImageController::class, 'index']);
             Route::get('/{id}', [ProductImageController::class, 'show']);
             Route::post('/', [ProductImageController::class, 'store']);
@@ -59,15 +59,17 @@ Route::middleware(["log"])->group(function () {
             Route::delete('/{id}', [ProductImageController::class, 'destroy']);
         });
 
-        Route::prefix('/carts')->group(function () {
-            Route::get('/', [CartController::class, 'index']); // Kullanıcının sepetini getir
-            Route::post('/', [CartController::class, 'store']); // Sepete ürün ekle
-            Route::delete('/{itemId}', [CartController::class, 'destroy']); // Sepetten ürün çıkar
+        Route::prefix('/carts')->group(function () {  //sepet işlemleri
+            Route::get('/', [CartController::class, 'index']);
+            Route::post('/', [CartController::class, 'store']); 
+            Route::delete('/{itemId}', [CartController::class, 'destroy']); 
+            Route::put('/{itemId}', [CartController::class, 'update']); 
         });
 
-        Route::prefix('/orders')->group(function () {
-            Route::get('/', [OrderController::class, 'getOrdersByAuthenticatedUser']);
+        Route::prefix('/orders')->group(function () { //sipariş işlemleri
             Route::post('/', [OrderController::class, 'create']);
+            Route::put('/{orderId}', [OrderController::class, 'update']);
+            Route::get('/', [OrderController::class, 'getOrdersByAuthenticatedUser']);
             Route::get('/user/{userId}', [OrderController::class, 'getOrdersByUserId']);
         });
         

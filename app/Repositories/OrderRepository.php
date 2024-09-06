@@ -60,7 +60,28 @@ class OrderRepository implements OrderRepositoryInterface
             $orders[] = $order;
         }
 
+        // Sepet öğelerini zorla sil (force delete)
+        foreach ($cartItems as $item) {
+            //TODO : burda force delete de yapabilirim 
+            $item->delete(); // Sepetteki itemları sil
+        }
+        // $cart->items()->delete(); böyle de yapabiliriz
+
         return $orders;
+    }
+
+    public function updateOrder(int $orderId, array $data)
+    {
+        $order = Order::find($orderId);
+
+        if (!$order) {
+            return false; // Sipariş bulunamadı
+        }
+
+        // Sipariş verilerini güncelle
+        $order->update($data);
+
+        return $order;
     }
 
     public function getOrdersByAuthenticatedUser($userId)

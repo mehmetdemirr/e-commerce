@@ -9,4 +9,5 @@ interface OrderRepositoryInterface
     public function getOrdersByAuthenticatedUser(int $userId);
 
     public function getOrdersByUserId(int $userId);
+    public function updateOrder(int $orderId, array $data);
 }

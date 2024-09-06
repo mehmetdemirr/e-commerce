@@ -2,10 +2,9 @@
 
 namespace App\Http\Requests;
 
-use App\Http\Requests\BaseRequest;
 use Illuminate\Foundation\Http\FormRequest;
 
-class LoginRequest extends BaseRequest
+class UpdateCartItemRequest extends BaseRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -20,21 +19,24 @@ class LoginRequest extends BaseRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
-    public function rules()
+    public function rules(): array
     {
         return [
-            'email' => 'required|email',
-            'password' => 'required|string',
+            'quantity' => 'required|integer|min:1',
         ];
     }
 
-    public function messages()
+    /**
+     * Custom error messages for validation.
+     *
+     * @return array<string, string>
+     */
+    public function messages(): array
     {
         return [
-            'email.required' => 'Email address is required.',
-            'email.email' => 'Please provide a valid email address.',
-            'email.exists' => 'The email address does not exist in our records.',
-            'password.required' => 'Password is required.',
+            'quantity.required' => 'Ürün adedi belirtilmelidir.',
+            'quantity.integer'  => 'Ürün adedi bir sayı olmalıdır.',
+            'quantity.min'      => 'Ürün adedi en az 1 olmalıdır.',
         ];
     }
 }
