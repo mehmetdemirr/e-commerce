@@ -18,13 +18,25 @@ class DatabaseSeeder extends Seeder
         ]);
 
        $user = User::factory()->create([
-            'name' => 'Mehmet',
-            'email' => 'mehmet@gmail.com',
+            'name' => 'User Kullanıcısı',
+            'email' => 'user@gmail.com',
         ]);
-
         $user->assignRole('admin');
 
+        $company = User::factory()->create([
+            'name' => 'Company Kullanıcısı',
+            'email' => 'company@gmail.com',
+        ]);
+        $company->assignRole('company');
+
+        $company = User::factory()->create([
+            'name' => 'Admin Kullanıcısı',
+            'email' => 'admin@gmail.com',
+        ]);
+        $company->assignRole('admin');
+
         $this->call([
+            BusinessSeeder::class, //işletme ekle
             CategorySeeder::class, //genel kategori ekle
             BrandSeeder::class, //genele marka ekle
             UserSeeder::class, //kullanıcı ekle
@@ -34,7 +46,6 @@ class DatabaseSeeder extends Seeder
             CartItemSeeder::class, //sepete item ekle
             OrderSeeder::class, //sipariş oluştur
             ReviewSeeder::class, //ürünlere yorum ekle
-            BusinessSeeder::class, //işletme ekle
         ]); 
 
     }

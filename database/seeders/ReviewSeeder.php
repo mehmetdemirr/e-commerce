@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\OrderItem;
 use App\Models\Product;
 use App\Models\Review;
 use App\Models\User;
@@ -14,12 +15,14 @@ class ReviewSeeder extends Seeder
      */
     public function run(): void
     {
-        // Ürünlerin ve kullanıcıların mevcut olduğundan emin ol
-        if (Product::count() == 0 || User::count() == 0) {
-            $this->command->info('No products or users found. Please run ProductSeeder and UserSeeder first.');
-            return;
-        }
+        // Yorumlar, sadece sipariş edilen ürünler için oluşturulacak
+        $orderItems = OrderItem::all();
 
-        Review::factory()->count(50)->create();
+        foreach ($orderItems as $orderItem) {
+            Review::factory()->create([
+                'user_id' => $orderItem->order->user_id,
+                'product_id' => $orderItem->product_id,
+            ]);
+        }
     }
 }

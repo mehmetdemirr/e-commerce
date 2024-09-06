@@ -19,37 +19,19 @@ class ReviewFactory extends Factory
      */
     public function definition(): array
     {
-        // Kullanıcıları ve ürünleri al
-        $users = User::all();
+        // Kullanıcının sipariş verdiği ürünlerden birini seç
+        $orderItem = OrderItem::inRandomOrder()->first();
 
-        // Eğer kullanıcılar yoksa, factory boş bir dizi döndürür
-        if ($users->isEmpty()) {
+        // Eğer sipariş verilmiş bir ürün yoksa, factory boş döner
+        if (!$orderItem) {
             return [];
         }
-
-        // Rastgele bir kullanıcı seç
-        $user = $users->random();
-
-        // Kullanıcının satın aldığı ürünleri al
-        $products = OrderItem::where('order_id', function($query) use ($user) {
-            $query->select('id')
-                ->from('orders')
-                ->where('user_id', $user->id);
-        })->pluck('product_id');
-
-        // Eğer kullanıcı hiçbir ürün satın almadıysa, factory boş bir dizi döndürür
-        if ($products->isEmpty()) {
-            return [];
-        }
-
-        // Rastgele bir ürün seç
-        $productId = $products->random();
 
         return [
-            'user_id' => $user->id,
-            'product_id' => $productId,
+            'user_id' => $orderItem->order->user_id, // Siparişi veren kullanıcı
+            'product_id' => $orderItem->product_id,  // Sipariş edilen ürün
             'rating' => $this->faker->numberBetween(1, 5),
-            'comment' => $this->faker->sentence(),
+            'comment' => $this->faker->sentence,
         ];
     }
 }

@@ -29,7 +29,7 @@ class ProductFactory extends Factory
             'quantity' => $this->faker->numberBetween(1, 100),
             'sku' => $this->faker->unique()->ean13(),
             'category_id' => $this->faker->numberBetween(1, 10),
-            'user_id' => 1,
+            'business_id' => 2,
             'brand_id' => $this->faker->numberBetween(1, 10),
             'discount' => $this->faker->randomFloat(2, 0, 50),
             'shipping_cost' => $this->faker->randomFloat(2, 5, 20),
