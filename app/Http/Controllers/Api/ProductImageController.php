@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateProductImageRequest;
 use App\Interfaces\ProductImageRepositoryInterface;
 use App\Models\ProductImage;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 
 class ProductImageController extends Controller
 {
@@ -20,11 +21,6 @@ class ProductImageController extends Controller
 
     public function index()
     {
-
-        // $existingImages = $this->productImageRepository->findExistingMainImages(1);
-        // $existingMainImages = $existingImages->where('is_main', true)->all();
-        // dd(count($existingMainImages));
-
         $productImages = $this->productImageRepository->all();
         return response()->json([
             'success' => true,
@@ -98,7 +94,7 @@ class ProductImageController extends Controller
 
         } catch (\Exception $e) {
             DB::rollBack();
-
+ 
             return response()->json([
                 'success' => false,
                 'data' => null,
@@ -170,22 +166,21 @@ class ProductImageController extends Controller
     public function destroy($id)
     {
         $productImage = $this->productImageRepository->delete($id);
-        if ($productImage) {
-           return response()->json([
-                'success'=> true,
-                'data' => null,
-                'errors' => null,
-                'message' => "product image silindi !",
-                ], 200
-            );
-        } else {
+        if ($productImage) 
+        {
             return response()->json([
-                'success'=> false,
+                'success' => true,
                 'data' => null,
                 'errors' => null,
-                'message' =>  "Böyle bir product image  bulunmamadı !",
-                ], 400
-            );
+                'message' => "product image silindi"
+            ], 200);
+        }else{
+            return response()->json([
+                'success' => false,
+                'data' => null,
+                'errors' => null,
+                'message' => "product image silinmedi !"
+            ], 400);
         }
     }
 }

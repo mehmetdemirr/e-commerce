@@ -27,4 +27,21 @@ class ProductImage extends Model
     {
         return $this->belongsTo(Product::class);
     }
+
+        /**
+     * Resmin tam URL'sini al
+     *
+     * @return string
+     */
+    public function getImageUrlAttribute()
+    {
+        return asset('storage/' . $this->attributes['image_url']);
+    }
+
+    // In ProductImage model
+    public function getFilePathAttribute()
+    {
+        // Remove 'http://localhost/storage/' from the image_url to get the path for storage operations
+        return str_replace(asset('storage/'), '', $this->attributes['image_url']);
+    }
 }

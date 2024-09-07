@@ -26,11 +26,16 @@ class StoreProductImageRequest extends BaseRequest
         return [
             'product_id' => 'required|exists:products,id',
             'images' => 'required|array',
-            'images.*.image_url' => 'required|url',
+            'images.*.file' => 'required|file|mimes:jpeg,png,jpg,gif|max:2048', // Dosya türleri ve boyutu
             'images.*.is_main' => 'nullable|boolean'
         ];
     }
 
+    /**
+     * Get the validation messages for the defined validation rules.
+     *
+     * @return array<string, string>
+     */
     public function messages(): array
     {
         return [
@@ -38,8 +43,10 @@ class StoreProductImageRequest extends BaseRequest
             'product_id.exists' => 'The specified product does not exist.',
             'images.required' => 'At least one image is required.',
             'images.array' => 'Images must be an array.',
-            'images.*.image_url.required' => 'Image URL is required.',
-            'images.*.image_url.url' => 'Image URL must be a valid URL.',
+            'images.*.file.required' => 'Image file is required.',
+            'images.*.file.file' => 'Each image must be a file.',
+            'images.*.file.mimes' => 'Each image must be a file of type: jpeg, png, jpg, gif.',
+            'images.*.file.max' => 'Each image may not be greater than 2MB.',
             'images.*.is_main.boolean' => 'Is main must be a boolean value.',
         ];
     }

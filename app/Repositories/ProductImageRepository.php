@@ -5,13 +5,16 @@ namespace App\Repositories;
 use App\Interfaces\ProductImageRepositoryInterface;
 use App\Models\ProductImage;
 
+
 class ProductImageRepository implements ProductImageRepositoryInterface
 {
     protected $model;
+    protected $storageRepository;
 
-    public function __construct(ProductImage $productImage)
+    public function __construct(ProductImage $productImage,LocalStorageRepository $storageRepository)
     {
         $this->model = $productImage;
+        $this->storageRepository = $storageRepository;
     }
 
     public function all()
@@ -22,50 +25,54 @@ class ProductImageRepository implements ProductImageRepositoryInterface
     public function find($id)
     {
         try {
-            // ProductImage modelinden belirli bir ID'ye sahip resmi bul
             $productImage = $this->model->find($id);    
     
-            // Eğer model bulunamazsa, uygun bir hata mesajı döndür
             if (!$productImage) {
                 return null;
             }
             return $productImage;
     
         } catch (\Exception $e) {
-            // Hata durumunda uygun bir yanıt döndür
             return null;
         }
     }
 
     public function create(array $attributes)
     {
+        // Dosyayı depolama
+        $attributes['image_url'] = $this->storageRepository->store('product_images', $attributes['file']);
         return $this->model->create($attributes);
     }
 
     public function update($id, array $attributes)
     {
         $productImage = $this->find($id);
-        $productImage->update($attributes);
+        if ($productImage) {
+            // Eski dosyayı silme
+            if (isset($attributes['file'])) {
+                $this->storageRepository->delete($productImage->image_url);
+                // Yeni dosyayı depolama
+                $attributes['image_url'] = $this->storageRepository->store('product_images', $attributes['file']);
+            }
+            $productImage->update($attributes);
+        }
         return $productImage;
     }
 
     public function delete($id)
     {
         try {
-            // ProductImage modelinden belirli bir ID'ye sahip resmi bul
             $productImage = $this->find($id);
-    
-            // Eğer model bulunamazsa, uygun bir hata mesajı döndür
-            if (!$productImage) {
-                return false;
+            if ($productImage) {
+                // Dosyayı silme
+                $filePath = $productImage->file_path;
+                $this->storageRepository->delete($filePath);
+                $productImage->delete();
+                return true;
             }
-    
-            // Modeli sil ve başarılı bir yanıt döndür
-            $productImage->delete();
-            return true;
+            return false;
     
         } catch (\Exception $e) {
-            // Hata durumunda uygun bir yanıt döndür
             return false;
         }
     }
