@@ -35,7 +35,7 @@ class OrderController extends Controller
                     'success' => true,
                     'data' => $orders,
                     'errors' => null,
-                    'message' => 'Orders created successfully.'
+                    'message' => 'Sipariş başarılı şekilde oluştu.'
                 ]);
             } else {
                 return response()->json([
@@ -49,7 +49,7 @@ class OrderController extends Controller
             return response()->json([
                 'success' => false,
                 'data' => null,
-                'errors' => 'İçsel hata',
+                'errors' => 'Sipariş oluştulamadı',
                 'message' => null
             ]);
         }
@@ -81,7 +81,9 @@ class OrderController extends Controller
     public function getOrdersByAuthenticatedUser(Request $request)
     {
         $userId = $request->user()->id;
-        $orders = $this->orderRepository->getOrdersByAuthenticatedUser($userId);
+        $page = $request->input('page', 1); 
+        $perPage = $request->input('per_page', 15); 
+        $orders = $this->orderRepository->getOrdersByAuthenticatedUser($userId,$page, $perPage);
         return response()->json([
             'success' => true,
             'data' => $orders,
@@ -90,10 +92,12 @@ class OrderController extends Controller
         ]);
     }
 
-    public function getOrdersByUserId($userId)
+    public function getOrdersByUserId(Request $request,$userId)
     {
         $this->authorize('viewAny', Order::class); 
-        $orders = $this->orderRepository->getOrdersByUserId($userId);
+        $page = $request->input('page', 1); 
+        $perPage = $request->input('per_page', 15); 
+        $orders = $this->orderRepository->getOrdersByUserId($userId,$page, $perPage);
         return response()->json([
             'success' => true,
             'data' => $orders,

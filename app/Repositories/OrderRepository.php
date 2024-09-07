@@ -32,6 +32,13 @@ class OrderRepository implements OrderRepositoryInterface
             $product = $item->product; // Ürünün detayları
             $businessId = $product->business_id; // Ürünün ait olduğu mağaza
 
+            // Stok kontrolü
+            if ($product->quantity < $item->quantity) {
+                // Remove out-of-stock items from the cart
+                $item->delete();
+               return null;
+            }
+
             if (!isset($ordersByBusiness[$businessId])) {
                 $ordersByBusiness[$businessId] = [
                     'total' => 0,
@@ -63,6 +70,9 @@ class OrderRepository implements OrderRepositoryInterface
                     'quantity' => $item->quantity,
                     'price' => $item->product->price,
                 ]);
+
+                //Ürün stok azalt
+                $item->product->decrement('quantity', $item->quantity);
             }
 
             $orders[] = $order;
@@ -95,29 +105,17 @@ class OrderRepository implements OrderRepositoryInterface
         return $order;
     }
 
-    /**
-     * Get all orders for a specific user.
-     *
-     * @param int $userId
-     * @return \Illuminate\Database\Eloquent\Collection
-     */
-    public function getOrdersByAuthenticatedUser($userId)
+    public function getOrdersByAuthenticatedUser($userId, $page = 1, $perPage = 10)
     {
         return Order::where('user_id', $userId)
             ->with('items.product', 'orderStatus', 'paymentStatus')
-            ->get();
+            ->paginate($perPage, ['*'], 'page', $page);
     }
 
-    /**
-     * Get all orders for a specific user by user ID.
-     *
-     * @param int $userId
-     * @return \Illuminate\Database\Eloquent\Collection
-     */
-    public function getOrdersByUserId($userId)
+    public function getOrdersByUserId($userId, $page = 1, $perPage = 10)
     {
         return Order::where('user_id', $userId)
             ->with('items.product', 'orderStatus', 'paymentStatus')
-            ->get();
+            ->paginate($perPage, ['*'], 'page', $page);
     }
 }

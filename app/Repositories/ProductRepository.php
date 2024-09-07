@@ -15,11 +15,12 @@ class ProductRepository implements ProductRepositoryInterface
         $this->model = $product;
     }
 
-    public function all($page = 1,$perPage = 10)
+    public function all($page = 1, $perPage = 10)
     {
-        return $this->model->with(['images' => function($query) {
-            $query->where('is_main', true)->first(); // or use `limit(1)` if you want to get just the first image
-        }])->get();
+        return $this->model->with(['images' => function ($query) {
+            $query->where('is_main', true); // Filter for the main image
+        }])
+        ->paginate($perPage, ['*'], 'page', $page); // Use Laravel's paginate method
     }
 
     public function find($id)

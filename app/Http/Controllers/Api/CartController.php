@@ -43,13 +43,26 @@ class CartController extends Controller
 
         $cartItem = $this->cartRepository->addItemToCart($cart->id, $request->product_id, $request->quantity);
 
-        return response()->json([
-            'success'=> true,
-            'data' => $cartItem,
-            'errors' => null,
-            'message' => null,
-            ], 200
-        );
+
+        if(!$cartItem){
+            return response()->json([
+                'success'=> false,
+                'data' => null,
+                'errors' => "Ürün stokta bu kadar yok",
+                'message' => null,
+                ], 400
+            );
+        }
+        else
+        {
+            return response()->json([
+                'success'=> true,
+                'data' => $cartItem,
+                'errors' => null,
+                'message' => null,
+                ], 200
+            );
+        }
     }
 
     public function update(UpdateCartItemRequest $request, $itemId)
@@ -59,8 +72,8 @@ class CartController extends Controller
 
         if ($cartItem) {
             return response()->json([
-                'success'=> true,
-                'data' => $cartItem,
+                'success'=> false,
+                'data' => null,
                 'errors' => null,
                 'message' => "Ürün adedi güncellendi",
                 ], 200
@@ -69,7 +82,7 @@ class CartController extends Controller
             return response()->json([
                 'success'=> false,
                 'data' => null,
-                'errors' => "Ürün bulunamadı veya güncellenemedi",
+                'errors' => "Ürün bulunamadı veya güncellenemedi(ürün stoğundan fazla girilmiş olabilir)",
                 'message' => null,
                 ], 400
             );

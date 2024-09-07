@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Interfaces\CardRepositoryInterface;
 use App\Models\Cart;
 use App\Models\CartItem;
+use App\Models\Product;
 
 class CardRepository implements CardRepositoryInterface
 {
@@ -21,11 +22,17 @@ class CardRepository implements CardRepositoryInterface
     public function updateCartItemQuantity($itemId, $quantity)
     {
         $cartItem = CartItem::find($itemId);
-
+        
         if ($cartItem) {
+            $product = $cartItem->product;
+            if ($product->quantity < $quantity) {
+                //ürün adedi bu kadar yok
+                return null;
+            }
+
             $cartItem->quantity = $quantity;
             $cartItem->save();
-
+            
             return $cartItem;
         }
 
@@ -34,6 +41,12 @@ class CardRepository implements CardRepositoryInterface
 
     public function addItemToCart($cartId, $productId, $quantity)
     {
+        $product = Product::find($productId);
+
+        if (!$product || $product->quantity < $quantity) {
+            return false;
+        }
+
         $cart = Cart::find($cartId);
         return $cart->items()->updateOrCreate(
             ['product_id' => $productId],
