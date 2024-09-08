@@ -36,6 +36,22 @@ return Application::configure(basePath: dirname(__DIR__))
                 }
             };
         });
+
+        // 403 Forbidden durumunu özelleştiriyoruz
+        $exceptions->map(\Illuminate\Auth\Access\AuthorizationException::class, function ($exception) {
+            return new class($exception) extends \Exception {
+                public function render($request)
+                {
+                    return response()->json([
+                        'success' => false,
+                        'data' => null,
+                        'message' => 'Bu işlem için yetkiniz yok.',
+                        'errors' => 'Yetkisiz erişim.',
+                    ], 403);
+                }
+            };
+        });
+
         // ThrottleRequestsException için özelleştirme
         $exceptions->map(\Illuminate\Http\Exceptions\ThrottleRequestsException::class, function ($exception) {
             return new class($exception) extends \Exception {

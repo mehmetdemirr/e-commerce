@@ -13,7 +13,7 @@ class CartItemPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasRole('user') || $user->hasRole('admin');
+        return $user->hasRole('admin');
     }
 
     /**
@@ -21,7 +21,7 @@ class CartItemPolicy
      */
     public function view(User $user, CartItem $cartItem): bool
     {
-        return $user->hasRole('user') || $user->hasRole('admin');
+        return $user->id === $cartItem->cart->user_id || $user->hasRole('admin');
     }
 
     /**
@@ -37,7 +37,7 @@ class CartItemPolicy
      */
     public function update(User $user, CartItem $cartItem): bool
     {
-        return $user->hasRole('user') || $user->hasRole('admin');
+        return $user->id === $cartItem->cart->user_id || $user->hasRole('admin');
     }
 
     /**
@@ -45,7 +45,7 @@ class CartItemPolicy
      */
     public function delete(User $user, CartItem $cartItem): bool
     {
-        return $user->hasRole('user') || $user->hasRole('admin');
+        return $$user->id === $cartItem->cart->user_id || $user->hasRole('admin');
     }
 
     /**

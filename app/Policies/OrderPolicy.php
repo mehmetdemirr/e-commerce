@@ -5,6 +5,7 @@ namespace App\Policies;
 use App\Models\Order;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
+use Illuminate\Support\Facades\Log;
 
 class OrderPolicy
 {
@@ -13,8 +14,7 @@ class OrderPolicy
      */
     public function viewAny(User $user): bool
     {
-        // Kullanıcının tüm siparişleri görüntüleme iznine sahip olup olmadığını kontrol eder.
-        return $user->hasRole('admin'); // Örneğin, sadece adminler görebilir
+        return $user->hasRole('admin');
     }
 
     /**
@@ -31,7 +31,7 @@ class OrderPolicy
      */
     public function create(User $user): bool
     {
-        return true;
+        return $user->hasRole('user') || $user->hasRole('admin') ;
     }
 
     /**
@@ -39,7 +39,7 @@ class OrderPolicy
      */
     public function update(User $user, Order $order): bool
     {
-        return true;
+        return  $user->id === $order->user_id || $user->hasRole('admin');;
     }
 
     /**
@@ -47,7 +47,7 @@ class OrderPolicy
      */
     public function delete(User $user, Order $order): bool
     {
-        return true;
+        return $user->hasRole('admin');
     }
 
     /**
@@ -55,7 +55,7 @@ class OrderPolicy
      */
     public function restore(User $user, Order $order): bool
     {
-        return true;
+        return $user->hasRole('admin');
     }
 
     /**
@@ -63,6 +63,6 @@ class OrderPolicy
      */
     public function forceDelete(User $user, Order $order): bool
     {
-        return true;
+        return $user->hasRole('admin');
     }
 }

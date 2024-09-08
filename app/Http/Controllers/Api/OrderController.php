@@ -6,13 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateOrderRequest;
 use App\Interfaces\OrderRepositoryInterface;
 use App\Models\Order;
+use App\Policies\OrderPolicy;
 use Illuminate\Http\Request;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Support\Facades\Gate;
 
 class OrderController extends Controller
 {
-
-    use AuthorizesRequests;
 
     protected $orderRepository;
 
@@ -80,6 +79,7 @@ class OrderController extends Controller
 
     public function getOrdersByAuthenticatedUser(Request $request)
     {
+        Gate::authorize('viewAny');
         $userId = $request->user()->id;
         $page = $request->input('page', 1); 
         $perPage = $request->input('per_page', 15); 
@@ -94,7 +94,6 @@ class OrderController extends Controller
 
     public function getOrdersByUserId(Request $request,$userId)
     {
-        $this->authorize('viewAny', Order::class); 
         $page = $request->input('page', 1); 
         $perPage = $request->input('per_page', 15); 
         $orders = $this->orderRepository->getOrdersByUserId($userId,$page, $perPage);
