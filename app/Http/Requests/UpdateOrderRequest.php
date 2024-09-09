@@ -22,8 +22,7 @@ class UpdateOrderRequest extends BaseRequest
     public function rules()
     {
         return [
-            //TODO status güncelle 
-            'status' => 'required|string|in:pending,completed,canceled', // Durum değerleri örnek
+            'status' => 'required|string',
         ];
     }
 
@@ -31,7 +30,6 @@ class UpdateOrderRequest extends BaseRequest
     {
         return [
             'status.required' => 'Sipariş durumu belirtilmelidir.',
-            'status.in' => 'Geçersiz sipariş durumu.',
         ];
     }
 }

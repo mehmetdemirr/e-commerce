@@ -15,8 +15,8 @@ return new class extends Migration
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade'); // Siparişi veren kullanıcı
             $table->foreignId('business_id')->constrained()->onDelete('cascade'); //işletme
-            $table->foreignId('order_status_id')->nullable()->constrained('order_statuses')->onDelete('set null');
-            $table->foreignId('payment_status_id')->nullable()->constrained('payment_statuses')->onDelete('set null'); 
+            $table->string('order_status');
+            $table->string('payment_status'); 
             $table->decimal('total', 10, 2); // Sipariş toplam tutarı
             $table->string('payment_method')->default('credit_card'); 
             $table->string('payment_reference')->nullable();

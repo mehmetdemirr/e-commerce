@@ -19,7 +19,7 @@ class ProductPolicy
 
     public function viewAnyCompany(User $user): bool
     {
-        return $user->hasRole(UserRole::COMPANY->value);
+        return $user->hasRole(UserRole::COMPANY);
     }
 
     /**
@@ -35,7 +35,7 @@ class ProductPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasRole(UserRole::COMPANY->value);
+        return $user->hasRole(UserRole::COMPANY);
     }
 
     /**
@@ -43,7 +43,7 @@ class ProductPolicy
      */
     public function update(User $user, Product $product): bool
     {
-        return $product->business->user_id == $user->id && $user->hasRole(UserRole::COMPANY->value);
+        return $product->business->user_id == $user->id && $user->hasRole(UserRole::COMPANY);
     }
 
     /**
@@ -51,7 +51,7 @@ class ProductPolicy
      */
     public function delete(User $user, Product $product): bool
     {
-        return $product->business->user_id == $user->id && $user->hasRole(UserRole::COMPANY->value);
+        return $product->business->user_id == $user->id && $user->hasRole(UserRole::COMPANY);
     }
 
     /**
@@ -59,7 +59,7 @@ class ProductPolicy
      */
     public function restore(User $user, Product $product): bool
     {
-        return $user->hasRole(UserRole::ADMIN->value);
+        return $user->hasRole(UserRole::ADMIN);
     }
 
     /**
@@ -67,6 +67,6 @@ class ProductPolicy
      */
     public function forceDelete(User $user, Product $product): bool
     {
-        return $user->hasRole(UserRole::ADMIN->value);
+        return $user->hasRole(UserRole::ADMIN);
     }
 }

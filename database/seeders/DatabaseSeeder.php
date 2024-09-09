@@ -22,23 +22,21 @@ class DatabaseSeeder extends Seeder
             'name' => 'User Kullanıcısı',
             'email' => 'user@gmail.com',
         ]);
-        $user->assignRole(UserRole::ADMIN->value);
+        $user->assignRole(UserRole::ADMIN);
 
         $company = User::factory()->create([
             'name' => 'Company Kullanıcısı',
             'email' => 'company@gmail.com',
         ]);
-        $company->assignRole(UserRole::COMPANY->value);
+        $company->assignRole(UserRole::COMPANY);
 
         $company = User::factory()->create([
             'name' => 'Admin Kullanıcısı',
             'email' => 'admin@gmail.com',
         ]);
-        $company->assignRole(UserRole::ADMIN->value);
+        $company->assignRole(UserRole::ADMIN);
 
         $this->call([
-            OrderStatusSeeder::class,
-            PaymentStatusSeeder::class,
             BusinessSeeder::class, //işletme ekle
             CategorySeeder::class, //genel kategori ekle
             BrandSeeder::class, //genele marka ekle

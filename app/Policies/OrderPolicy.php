@@ -15,17 +15,17 @@ class OrderPolicy
      */
     public function viewAnyAdmin(User $user): bool
     {
-        return $user->hasRole(UserRole::ADMIN->value);
+        return $user->hasRole(UserRole::ADMIN);
     }
 
     public function viewAnyCompany(User $user): bool
     {
-        return $user->hasRole(UserRole::COMPANY->value);
+        return $user->hasRole(UserRole::COMPANY);
     }
 
     public function viewAny(User $user): bool
     {
-        return $user->hasRole(UserRole::USER->value);
+        return $user->hasRole(UserRole::USER);
     }
 
     /**
@@ -35,8 +35,8 @@ class OrderPolicy
     {
         // Kullanıcının belirli bir siparişi görüntüleme iznine sahip olup olmadığını kontrol eder.
         return $user->id === $order->user_id || 
-                $user->business->user_id === $order->business_id || 
-                $user->hasRole(UserRole::ADMIN->value);
+                ($user->business->user_id === $order->business_id && $user->hasRole(UserRole::COMPANY)) || 
+                $user->hasRole(UserRole::ADMIN);
     }
 
     /**
@@ -44,7 +44,7 @@ class OrderPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasRole('user') || $user->hasRole(UserRole::ADMIN->value);
+        return $user->hasRole('user') || $user->hasRole(UserRole::ADMIN);
     }
 
     /**
@@ -52,7 +52,8 @@ class OrderPolicy
      */
     public function update(User $user, Order $order): bool
     {
-        return $user->hasRole(UserRole::ADMIN->value);;
+        return ($user->business->user_id === $order->business_id && $user->hasRole(UserRole::COMPANY)) || 
+                $user->hasRole(UserRole::ADMIN);
     }
 
     /**
@@ -60,7 +61,7 @@ class OrderPolicy
      */
     public function delete(User $user, Order $order): bool
     {
-        return $user->hasRole(UserRole::ADMIN->value);
+        return $user->hasRole(UserRole::ADMIN);
     }
 
     /**
@@ -68,7 +69,7 @@ class OrderPolicy
      */
     public function restore(User $user, Order $order): bool
     {
-        return $user->hasRole(UserRole::ADMIN->value);
+        return $user->hasRole(UserRole::ADMIN);
     }
 
     /**
@@ -76,6 +77,6 @@ class OrderPolicy
      */
     public function forceDelete(User $user, Order $order): bool
     {
-        return $user->hasRole(UserRole::ADMIN->value);
+        return $user->hasRole(UserRole::ADMIN);
     }
 }

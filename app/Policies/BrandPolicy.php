@@ -30,7 +30,7 @@ class BrandPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasRole(UserRole::ADMIN->value);
+        return $user->hasRole(UserRole::ADMIN);
     }
 
     /**
@@ -38,7 +38,7 @@ class BrandPolicy
      */
     public function update(User $user, Brand $brand): bool
     {
-        return $user->hasRole(UserRole::ADMIN->value);
+        return $user->hasRole(UserRole::ADMIN);
     }
 
     /**
@@ -46,7 +46,7 @@ class BrandPolicy
      */
     public function delete(User $user, Brand $brand): bool
     {
-        return $user->hasRole(UserRole::SUPERADMIN->value);
+        return $user->hasRole(UserRole::SUPERADMIN);
     }
 
     /**
@@ -54,7 +54,7 @@ class BrandPolicy
      */
     public function restore(User $user, Brand $brand): bool
     {
-        return $user->hasRole(UserRole::SUPERADMIN->value);
+        return $user->hasRole(UserRole::SUPERADMIN);
     }
 
     /**
@@ -62,6 +62,6 @@ class BrandPolicy
      */
     public function forceDelete(User $user, Brand $brand): bool
     {
-        return $user->hasRole(UserRole::SUPERADMIN->value);
+        return $user->hasRole(UserRole::SUPERADMIN);
     }
 }

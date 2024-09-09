@@ -16,10 +16,10 @@ class RolesAndPermissionsSeeder extends Seeder
     public function run(): void
     {
         // Roller oluştur
-        $superAdminRole = Role::create(['name' => UserRole::SUPERADMIN->value]);
-        $adminRole = Role::create(['name' => UserRole::ADMIN->value]);
-        $companyRole = Role::create(['name' => UserRole::COMPANY->value]);
-        $userRole = Role::create(['name' => UserRole::USER->value]);
+        $superAdminRole = Role::create(['name' => UserRole::SUPERADMIN]);
+        $adminRole = Role::create(['name' => UserRole::ADMIN]);
+        $companyRole = Role::create(['name' => UserRole::COMPANY]);
+        $userRole = Role::create(['name' => UserRole::USER]);
 
         // // İzinler oluştur
         // $adminPermission = Permission::create(['name' => 'admin access']);

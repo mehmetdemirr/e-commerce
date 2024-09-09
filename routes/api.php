@@ -75,24 +75,7 @@ Route::middleware(["log"])->group(function () {
             Route::get('/', [OrderController::class, 'getOrdersByAuthenticatedUser']);
             Route::get('/user/{userId}', [OrderController::class, 'getOrdersByUserId']);
             Route::get('/company', [OrderController::class, 'getOrdersByBusinessId']);
-        });
-
-        Route::prefix('/order-statuses')->group(function () {
-            Route::get('/', [OrderStatusController::class, 'index']);
-            Route::get('/{id}', [OrderStatusController::class, 'show']);
-            Route::post('/', [OrderStatusController::class, 'store']);
-            Route::put('/{id}', [OrderStatusController::class, 'update']);
-            Route::delete('/{id}', [OrderStatusController::class, 'destroy']);
-        });
-        
-        Route::prefix('/payment-statuses')->group(function () {
-            Route::get('/', [PaymentStatusController::class, 'index']);
-            Route::get('/{id}', [PaymentStatusController::class, 'show']);
-            Route::post('/', [PaymentStatusController::class, 'store']);
-            Route::put('/{id}', [PaymentStatusController::class, 'update']);
-            Route::delete('/{id}', [PaymentStatusController::class, 'destroy']);
-        });
-        
+        });        
         
         //admin route
         Route::middleware(["role:admin"])->group(function () {

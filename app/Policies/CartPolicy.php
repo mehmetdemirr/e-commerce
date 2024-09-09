@@ -30,7 +30,7 @@ class CartPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasRole(UserRole::USER->value) || $user->hasRole(UserRole::ADMIN->value);
+        return $user->hasRole(UserRole::USER) || $user->hasRole(UserRole::ADMIN);
     }
 
     /**
@@ -38,7 +38,7 @@ class CartPolicy
      */
     public function update(User $user, Cart $cart): bool
     {
-        return $user->hasRole(UserRole::USER->value) || $user->hasRole(UserRole::ADMIN->value);
+        return $user->hasRole(UserRole::USER) || $user->hasRole(UserRole::ADMIN);
     }
 
     /**
@@ -46,7 +46,7 @@ class CartPolicy
      */
     public function delete(User $user, Cart $cart): bool
     {
-        return $user->hasRole(UserRole::USER->value) || $user->hasRole(UserRole::ADMIN->value);
+        return $user->hasRole(UserRole::USER) || $user->hasRole(UserRole::ADMIN);
     }
 
     /**
@@ -54,7 +54,7 @@ class CartPolicy
      */
     public function restore(User $user, Cart $cart): bool
     {
-        return $user->hasRole(UserRole::ADMIN->value);
+        return $user->hasRole(UserRole::ADMIN);
     }
 
     /**
@@ -62,6 +62,6 @@ class CartPolicy
      */
     public function forceDelete(User $user, Cart $cart): bool
     {
-        return $user->hasRole(UserRole::ADMIN->value);
+        return $user->hasRole(UserRole::ADMIN);
     }
 }

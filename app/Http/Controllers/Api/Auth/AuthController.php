@@ -65,15 +65,15 @@ class AuthController extends Controller
 
         $role = $request->validated('role');
 
-        if($role === UserRole::USER->value)
+        if($role === UserRole::USER)
         {
             // Kullanıcı oluşturulduktan sonra sepet oluştur(Kullanıcı)
             $this->cartRepository->createCart($user->id);
         }
-        else if($role === UserRole::COMPANY->value)
+        else if($role === UserRole::COMPANY)
         {
             //Kullanıcı oluşturduktan sonra business oluştur.(Şirket)
-            $business = $this->businessRepository->create([
+            $this->businessRepository->create([
                 "user_id" => $user->id,
             ]);
         }else{
