@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enum\UserRole;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -21,19 +22,19 @@ class DatabaseSeeder extends Seeder
             'name' => 'User Kullanıcısı',
             'email' => 'user@gmail.com',
         ]);
-        $user->assignRole('admin');
+        $user->assignRole(UserRole::ADMIN->value);
 
         $company = User::factory()->create([
             'name' => 'Company Kullanıcısı',
             'email' => 'company@gmail.com',
         ]);
-        $company->assignRole('company');
+        $company->assignRole(UserRole::COMPANY->value);
 
         $company = User::factory()->create([
             'name' => 'Admin Kullanıcısı',
             'email' => 'admin@gmail.com',
         ]);
-        $company->assignRole('admin');
+        $company->assignRole(UserRole::ADMIN->value);
 
         $this->call([
             OrderStatusSeeder::class,

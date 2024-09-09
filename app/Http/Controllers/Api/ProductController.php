@@ -9,6 +9,7 @@ use App\Models\Product;
 use Illuminate\Http\Request;
 use App\Interfaces\ProductInterface;
 use App\Interfaces\ProductRepositoryInterface;
+use Illuminate\Support\Facades\Gate;
 
 class ProductController extends Controller
 {
@@ -21,6 +22,7 @@ class ProductController extends Controller
 
     public function index(Request $request)
     {
+        Gate::authorize("viewAny", Product::class);
         // Request'ten page ve perPage parametrelerini alıyoruz. 
         $page = $request->input('page', 1); 
         $perPage = $request->input('per_page', 15); 
@@ -49,6 +51,9 @@ class ProductController extends Controller
                 ], 400
             );
         }
+
+        Gate::authorize("view", $product);
+
         return response()->json([
             'success'=> true,
             'data' => $product,
@@ -60,7 +65,7 @@ class ProductController extends Controller
 
     public function store(StoreProductRequest $request)
     {
-
+        Gate::authorize("create", Product::class);
         $validatedData = $request->validated();
         $validatedData['user_id'] = $request->user()->id;
                 
@@ -77,6 +82,20 @@ class ProductController extends Controller
     public function update(UpdateProductRequest $request, $id)
     {
         $validatedData = $request->validated();
+
+        $product = $this->productRepository->find($id);
+        if(!$product)
+        {
+            return response()->json([
+                'success'=> false,
+                'data' => null,
+                'errors' => null,
+                'message' => "Böyle bir product bulunamadı !",
+                ], 400
+            );
+        }
+        Gate::authorize("update", $product);
+
         $product = $this->productRepository->update($id, $validatedData);
         if ($product) {
             return response()->json([
@@ -94,15 +113,24 @@ class ProductController extends Controller
                  'message' =>  "Böyle bir product bulunmamadı !",
                  ], 400
              );
-         }
-
-        // Kullanıcı ID'si güncelleme sırasında genellikle değiştirilmez
-        // Ancak, siz gerekli görürseniz burada da ekleyebilirsiniz
-        
+         }        
     }
 
     public function destroy($id)
     {
+        $product = $this->productRepository->find($id);
+        if(!$product)
+        {
+            return response()->json([
+                'success'=> false,
+                'data' => null,
+                'errors' => null,
+                'message' => "Böyle bir product bulunamadı !",
+                ], 400
+            );
+        }
+        Gate::authorize("delete", $product);
+
         $product = $this->productRepository->delete($id);
         if ($product) {
            return response()->json([

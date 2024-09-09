@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Enum\UserRole;
 use App\Models\OrderItem;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
@@ -13,7 +14,7 @@ class OrderItemPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasRole('admin');
+        return $user->hasRole(UserRole::ADMIN->value);
     }
 
     /**
@@ -21,7 +22,7 @@ class OrderItemPolicy
      */
     public function view(User $user, OrderItem $orderItem): bool
     {
-        return $user->id === $orderItem->order->user_id || $user->hasRole('admin');;
+        return $user->id === $orderItem->order->user_id || $user->hasRole(UserRole::ADMIN->value);;
     }
 
     /**
@@ -29,7 +30,7 @@ class OrderItemPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasRole('user') || $user->hasRole('admin');;
+        return $user->hasRole(UserRole::ADMIN->value) || $user->hasRole(UserRole::ADMIN->value);;
     }
 
     /**
@@ -37,7 +38,7 @@ class OrderItemPolicy
      */
     public function update(User $user, OrderItem $orderItem): bool
     {
-        return $user->hasRole('admin');;
+        return $user->hasRole(UserRole::ADMIN->value);;
     }
 
     /**
@@ -45,7 +46,7 @@ class OrderItemPolicy
      */
     public function delete(User $user, OrderItem $orderItem): bool
     {
-        return $user->hasRole('admin');
+        return $user->hasRole(UserRole::ADMIN->value);
     }
 
     /**
@@ -53,7 +54,7 @@ class OrderItemPolicy
      */
     public function restore(User $user, OrderItem $orderItem): bool
     {
-        return $user->hasRole('admin');
+        return $user->hasRole(UserRole::ADMIN->value);
     }
 
     /**
@@ -61,6 +62,6 @@ class OrderItemPolicy
      */
     public function forceDelete(User $user, OrderItem $orderItem): bool
     {
-        return $user->hasRole('admin');
+        return $user->hasRole(UserRole::ADMIN->value);
     }
 }

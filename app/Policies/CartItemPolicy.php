@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Enum\UserRole;
 use App\Models\CartItem;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
@@ -13,7 +14,7 @@ class CartItemPolicy
      */
     public function viewAny(User $user): bool
     {
-        return $user->hasRole('admin');
+        return $user->hasRole(UserRole::ADMIN->value);
     }
 
     /**
@@ -21,7 +22,7 @@ class CartItemPolicy
      */
     public function view(User $user, CartItem $cartItem): bool
     {
-        return $user->id === $cartItem->cart->user_id || $user->hasRole('admin');
+        return $user->id === $cartItem->cart->user_id || $user->hasRole(UserRole::ADMIN->value);
     }
 
     /**
@@ -29,7 +30,7 @@ class CartItemPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasRole('user') || $user->hasRole('admin');
+        return $user->hasRole('user') || $user->hasRole(UserRole::ADMIN->value);
     }
 
     /**
@@ -37,7 +38,7 @@ class CartItemPolicy
      */
     public function update(User $user, CartItem $cartItem): bool
     {
-        return $user->id === $cartItem->cart->user_id || $user->hasRole('admin');
+        return $user->id === $cartItem->cart->user_id || $user->hasRole(UserRole::ADMIN->value);
     }
 
     /**
@@ -45,7 +46,7 @@ class CartItemPolicy
      */
     public function delete(User $user, CartItem $cartItem): bool
     {
-        return $$user->id === $cartItem->cart->user_id || $user->hasRole('admin');
+        return $$user->id === $cartItem->cart->user_id || $user->hasRole(UserRole::ADMIN->value);
     }
 
     /**
@@ -53,7 +54,7 @@ class CartItemPolicy
      */
     public function restore(User $user, CartItem $cartItem): bool
     {
-        return $user->hasRole('admin');
+        return $user->hasRole(UserRole::ADMIN->value);
     }
 
     /**
@@ -61,6 +62,6 @@ class CartItemPolicy
      */
     public function forceDelete(User $user, CartItem $cartItem): bool
     {
-        return $user->hasRole('admin');
+        return $user->hasRole(UserRole::ADMIN->value);
     }
 }

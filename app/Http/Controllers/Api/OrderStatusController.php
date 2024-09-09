@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StatusRequest;
+use App\Models\OrderStatus;
 use App\Repositories\OrdertStatusRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class OrderStatusController extends Controller
 {
@@ -18,6 +20,7 @@ class OrderStatusController extends Controller
 
     public function index()
     {
+        Gate::authorize('viewAny', OrderStatus::class);
         $statuses = $this->statusRepository->getAllStatuses();
         return response()->json([
             'success' => true,
@@ -30,24 +33,28 @@ class OrderStatusController extends Controller
     public function show($id)
     {
         $status = $this->statusRepository->getStatusById($id);
-        if ($status) {
+        if (!$status) {
             return response()->json([
-                'success' => true,
-                'data' => $status,
-                'errors' => null,
+                'success' => false,
+                'data' => null,
+                'errors' => 'Order status not found.',
                 'message' => null,
-            ]);
+            ], 400);
         }
+
+        Gate::authorize('view',$status);
+        
         return response()->json([
-            'success' => false,
-            'data' => null,
-            'errors' => 'Order status not found.',
+            'success' => true,
+            'data' => $status,
+            'errors' => null,
             'message' => null,
-        ], 400);
+        ]);
     }
 
     public function store(StatusRequest $request)
     {
+        Gate::authorize('create', OrderStatus::class);
         $data = $request->validated();
         $status = $this->statusRepository->createStatus($data);
         return response()->json([
@@ -60,7 +67,9 @@ class OrderStatusController extends Controller
 
     public function update(StatusRequest $request, $id)
     {
+       
         $data = $request->validated();
+        Gate::authorize('update', $request);
         $status = $this->statusRepository->updateStatus($id, $data);
         if ($status) {
             return response()->json([
@@ -80,18 +89,31 @@ class OrderStatusController extends Controller
 
     public function destroy($id)
     {
+        $status = $this->statusRepository->getStatusById($id);
+        if (!$status) {
+            return response()->json([
+                'success' => false,
+                'data' => null,
+                'errors' => "Status bulunamadı",
+                'message' => null,
+            ],400);
+        }
+
+        Gate::authorize('delete', $status);
+
         if ($this->statusRepository->deleteStatus($id)) {
             return response()->json([
                 'success' => true,
                 'data' => null,
                 'errors' => null,
                 'message' => 'Order status deleted successfully.',
-            ]);
+            ],200);
         }
+
         return response()->json([
             'success' => false,
             'data' => null,
-            'errors' => 'Order status not found.',
+            'errors' => 'Order status silinemedi.',
             'message' => null,
         ], 400);
     }

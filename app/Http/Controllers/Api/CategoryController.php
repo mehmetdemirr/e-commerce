@@ -8,6 +8,7 @@ use App\Http\Requests\UpdateCategoryRequest;
 use App\Interfaces\CategoryRepositoryInterface;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 
 class CategoryController extends Controller
 {
@@ -20,6 +21,7 @@ class CategoryController extends Controller
 
     public function index(Request $request)
     {
+        Gate::authorize("viewAny", Category::class);
          // Request'ten page ve perPage parametrelerini alıyoruz. 
          $page = $request->input('page', 1); 
          $perPage = $request->input('per_page', 10); 
@@ -36,25 +38,27 @@ class CategoryController extends Controller
     public function show($id)
     {
         $category = $this->categoryRepository->find($id);
-        if ($category) {
+        if (!$category) {
+            return response()->json([
+                'success' => false,
+                'data' => null,
+                'errors' => 'Category not found.',
+                'message' => 'The requested category does not exist.',
+            ], 400);
+        } else {
+            Gate::authorize('view', $category);
             return response()->json([
                 'success' => true,
                 'data' => $category,
                 'errors' => null,
                 'message' => null,
-            ], 200);
-        } else {
-            return response()->json([
-                'success' => false,
-                'data' => null,
-                'errors' => 'Brand not found.',
-                'message' => 'The requested category does not exist.',
             ], 400);
         }
     }
 
     public function store(StoreCategoryRequest $request)
     {
+        Gate::authorize('create', Category::class);
         $validatedData = $request->validated();
 
         try {
@@ -78,6 +82,18 @@ class CategoryController extends Controller
     public function update(UpdateCategoryRequest $request, $id)
     {
         $validatedData = $request->validated();
+
+        $category = $this->categoryRepository->find($id);
+        if (!$category) {
+            return response()->json([
+                'success' => false,
+                'data' => null,
+                'errors' => 'Category not found.',
+                'message' => 'The requested category does not exist.',
+            ], 400);
+        } 
+
+        Gate::authorize('update', $category);
 
         $category = $this->categoryRepository->update($id, $validatedData);
         if ($category) 
@@ -104,8 +120,20 @@ class CategoryController extends Controller
 
     public function destroy($id)
     {
-        $brand = $this->categoryRepository->delete($id);
-        if ($brand) {
+        $category = $this->categoryRepository->find($id);
+        if (!$category) {
+            return response()->json([
+                'success' => false,
+                'data' => null,
+                'errors' => 'Category not found.',
+                'message' => 'The requested category does not exist.',
+            ], 400);
+        } 
+        
+        Gate::authorize('delete', $category);
+
+        $category = $this->categoryRepository->delete($id);
+        if ($category) {
            return response()->json([
                 'success'=> true,
                 'data' => null,

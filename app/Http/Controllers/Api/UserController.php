@@ -18,8 +18,7 @@ class UserController extends Controller
 
     public function user(Request $request)
     {
-        // Bir uyarı logu
-        $this->logService->logWarning('Kullanıcı bilgisi', 'Disk space is below 10%');
+        $this->logService->logWarning('Kullanıcı bilgisi');
         return response()->json([
             'success'=> true,
             'data' => $request->user(),

@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Enum\UserRole;
 use App\Models\Cart;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
@@ -29,7 +30,7 @@ class CartPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasRole('user') || $user->hasRole('admin');
+        return $user->hasRole(UserRole::USER->value) || $user->hasRole(UserRole::ADMIN->value);
     }
 
     /**
@@ -37,7 +38,7 @@ class CartPolicy
      */
     public function update(User $user, Cart $cart): bool
     {
-        return $user->hasRole('user') || $user->hasRole('admin');
+        return $user->hasRole(UserRole::USER->value) || $user->hasRole(UserRole::ADMIN->value);
     }
 
     /**
@@ -45,7 +46,7 @@ class CartPolicy
      */
     public function delete(User $user, Cart $cart): bool
     {
-        return $user->hasRole('user') || $user->hasRole('admin');
+        return $user->hasRole(UserRole::USER->value) || $user->hasRole(UserRole::ADMIN->value);
     }
 
     /**
@@ -53,7 +54,7 @@ class CartPolicy
      */
     public function restore(User $user, Cart $cart): bool
     {
-        return $user->hasRole('admin');
+        return $user->hasRole(UserRole::ADMIN->value);
     }
 
     /**
@@ -61,6 +62,6 @@ class CartPolicy
      */
     public function forceDelete(User $user, Cart $cart): bool
     {
-        return $user->hasRole('admin');
+        return $user->hasRole(UserRole::ADMIN->value);
     }
 }

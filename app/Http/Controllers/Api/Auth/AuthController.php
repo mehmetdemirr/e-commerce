@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Auth;
 
+use App\Enum\UserRole;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
@@ -63,7 +64,7 @@ class AuthController extends Controller
         $role = $validated['role'] ?? 'user';
 
         // Eğer rol "admin" ise "user" rolünü ata (ilk başta admin olarak kayıt almak istemiyorum)
-        if ($role === 'admin') {
+        if ($role === UserRole::ADMIN->value) {
             $role = 'user';
         }
 

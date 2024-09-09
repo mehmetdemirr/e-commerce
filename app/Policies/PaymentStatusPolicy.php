@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Enum\UserRole;
 use App\Models\PaymentStatus;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
@@ -13,7 +14,7 @@ class PaymentStatusPolicy
      */
     public function viewAny(User $user): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -21,7 +22,7 @@ class PaymentStatusPolicy
      */
     public function view(User $user, PaymentStatus $paymentStatus): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -29,7 +30,8 @@ class PaymentStatusPolicy
      */
     public function create(User $user): bool
     {
-        //
+
+        return $user->hasRole(UserRole::SUPERADMIN->value);
     }
 
     /**
@@ -37,15 +39,15 @@ class PaymentStatusPolicy
      */
     public function update(User $user, PaymentStatus $paymentStatus): bool
     {
-        //
+        return $user->hasRole(UserRole::SUPERADMIN->value);
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, PaymentStatus $paymentStatus): bool
+    public function delete(User $user): bool
     {
-        //
+        return $user->hasRole(UserRole::SUPERADMIN->value);
     }
 
     /**
@@ -53,7 +55,7 @@ class PaymentStatusPolicy
      */
     public function restore(User $user, PaymentStatus $paymentStatus): bool
     {
-        //
+        return $user->hasRole(UserRole::SUPERADMIN->value);
     }
 
     /**
@@ -61,6 +63,6 @@ class PaymentStatusPolicy
      */
     public function forceDelete(User $user, PaymentStatus $paymentStatus): bool
     {
-        //
+        return $user->hasRole(UserRole::SUPERADMIN->value);
     }
 }

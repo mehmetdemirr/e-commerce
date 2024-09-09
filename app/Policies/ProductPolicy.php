@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Enum\UserRole;
 use App\Models\Product;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
@@ -29,7 +30,7 @@ class ProductPolicy
      */
     public function create(User $user): bool
     {
-        return true;
+        return $user->hasRole(UserRole::COMPANY->value);
     }
 
     /**
@@ -37,7 +38,7 @@ class ProductPolicy
      */
     public function update(User $user, Product $product): bool
     {
-        return true;
+        return $product->business->user_id == $user->id || $user->hasRole(UserRole::COMPANY->value);
     }
 
     /**
@@ -45,7 +46,7 @@ class ProductPolicy
      */
     public function delete(User $user, Product $product): bool
     {
-        return true;
+        return $product->business->user_id == $user->id || $user->hasRole(UserRole::COMPANY->value);
     }
 
     /**
@@ -53,7 +54,7 @@ class ProductPolicy
      */
     public function restore(User $user, Product $product): bool
     {
-        return true;
+        return $user->hasRole(UserRole::ADMIN->value);
     }
 
     /**
@@ -61,6 +62,6 @@ class ProductPolicy
      */
     public function forceDelete(User $user, Product $product): bool
     {
-        return true;
+        return $user->hasRole(UserRole::ADMIN->value);
     }
 }

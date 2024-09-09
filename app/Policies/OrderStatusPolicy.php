@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Enum\UserRole;
 use App\Models\OrderStatus;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
@@ -13,7 +14,7 @@ class OrderStatusPolicy
      */
     public function viewAny(User $user): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -21,7 +22,7 @@ class OrderStatusPolicy
      */
     public function view(User $user, OrderStatus $orderStatus): bool
     {
-        //
+        return true;
     }
 
     /**
@@ -29,7 +30,7 @@ class OrderStatusPolicy
      */
     public function create(User $user): bool
     {
-        //
+        return $user->hasRole(UserRole::SUPERADMIN->value);
     }
 
     /**
@@ -37,7 +38,7 @@ class OrderStatusPolicy
      */
     public function update(User $user, OrderStatus $orderStatus): bool
     {
-        //
+        return $user->hasRole(UserRole::SUPERADMIN->value);
     }
 
     /**
@@ -45,7 +46,7 @@ class OrderStatusPolicy
      */
     public function delete(User $user, OrderStatus $orderStatus): bool
     {
-        //
+        return $user->hasRole(UserRole::SUPERADMIN->value);
     }
 
     /**
@@ -53,7 +54,7 @@ class OrderStatusPolicy
      */
     public function restore(User $user, OrderStatus $orderStatus): bool
     {
-        //
+        return $user->hasRole(UserRole::SUPERADMIN->value);
     }
 
     /**
@@ -61,6 +62,6 @@ class OrderStatusPolicy
      */
     public function forceDelete(User $user, OrderStatus $orderStatus): bool
     {
-        //
+        return $user->hasRole(UserRole::SUPERADMIN->value);
     }
 }

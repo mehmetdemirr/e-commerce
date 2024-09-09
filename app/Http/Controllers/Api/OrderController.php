@@ -22,8 +22,9 @@ class OrderController extends Controller
 
     public function create(Request $request)
     {
-        $userId = $request->user()->id;
+        Gate::authorize("create", Order::class);
 
+        $userId = $request->user()->id;
         // Sepeti oluştur ve sipariş oluştur
         $orders = $this->orderRepository->createOrder($userId);
 
@@ -69,6 +70,8 @@ class OrderController extends Controller
             ], 400);
         }
 
+        Gate::authorize('update', $order);
+
         return response()->json([
             'success' => true,
             'data' => $order,
@@ -79,7 +82,8 @@ class OrderController extends Controller
 
     public function getOrdersByAuthenticatedUser(Request $request)
     {
-        Gate::authorize('viewAny');
+        Gate::authorize('viewAny', Order::class); 
+
         $userId = $request->user()->id;
         $page = $request->input('page', 1); 
         $perPage = $request->input('per_page', 15); 
@@ -94,6 +98,8 @@ class OrderController extends Controller
 
     public function getOrdersByUserId(Request $request,$userId)
     {
+        Gate::authorize('viewAnyAdmin', Order::class);
+
         $page = $request->input('page', 1); 
         $perPage = $request->input('per_page', 15); 
         $orders = $this->orderRepository->getOrdersByUserId($userId,$page, $perPage);

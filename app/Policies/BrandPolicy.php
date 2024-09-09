@@ -2,6 +2,7 @@
 
 namespace App\Policies;
 
+use App\Enum\UserRole;
 use App\Models\Brand;
 use App\Models\User;
 use Illuminate\Auth\Access\Response;
@@ -29,7 +30,7 @@ class BrandPolicy
      */
     public function create(User $user): bool
     {
-        return $user->hasRole('admin');
+        return $user->hasRole(UserRole::ADMIN->value);
     }
 
     /**
@@ -37,7 +38,7 @@ class BrandPolicy
      */
     public function update(User $user, Brand $brand): bool
     {
-        return $user->hasRole('admin');
+        return $user->hasRole(UserRole::ADMIN->value);
     }
 
     /**
@@ -45,7 +46,7 @@ class BrandPolicy
      */
     public function delete(User $user, Brand $brand): bool
     {
-        return $user->hasRole('admin');
+        return $user->hasRole(UserRole::SUPERADMIN->value);
     }
 
     /**
@@ -53,7 +54,7 @@ class BrandPolicy
      */
     public function restore(User $user, Brand $brand): bool
     {
-        return $user->hasRole('admin');
+        return $user->hasRole(UserRole::SUPERADMIN->value);
     }
 
     /**
@@ -61,6 +62,6 @@ class BrandPolicy
      */
     public function forceDelete(User $user, Brand $brand): bool
     {
-        return $user->hasRole('admin');
+        return $user->hasRole(UserRole::SUPERADMIN->value);
     }
 }
