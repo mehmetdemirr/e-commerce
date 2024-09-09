@@ -17,6 +17,11 @@ class ProductPolicy
         return true;
     }
 
+    public function viewAnyCompany(User $user): bool
+    {
+        return $user->hasRole(UserRole::COMPANY->value);
+    }
+
     /**
      * Determine whether the user can view the model.
      */
@@ -38,7 +43,7 @@ class ProductPolicy
      */
     public function update(User $user, Product $product): bool
     {
-        return $product->business->user_id == $user->id || $user->hasRole(UserRole::COMPANY->value);
+        return $product->business->user_id == $user->id && $user->hasRole(UserRole::COMPANY->value);
     }
 
     /**
@@ -46,7 +51,7 @@ class ProductPolicy
      */
     public function delete(User $user, Product $product): bool
     {
-        return $product->business->user_id == $user->id || $user->hasRole(UserRole::COMPANY->value);
+        return $product->business->user_id == $user->id && $user->hasRole(UserRole::COMPANY->value);
     }
 
     /**

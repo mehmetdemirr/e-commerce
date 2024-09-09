@@ -105,6 +105,21 @@ class OrderRepository implements OrderRepositoryInterface
         return $order;
     }
 
+    /**
+     * Get orders by business ID.
+     *
+     * @param int $businessId
+     * @param int $page
+     * @param int $perPage
+     * @return \Illuminate\Pagination\LengthAwarePaginator
+     */
+    public function getOrdersByBusinessId($businessId, $page = 1, $perPage = 10)
+    {
+        return Order::where('business_id', $businessId)
+            ->with('items.product', 'orderStatus', 'paymentStatus')
+            ->paginate($perPage, ['*'], 'page', $page);
+    }
+
     public function getOrdersByAuthenticatedUser($userId, $page = 1, $perPage = 10)
     {
         return Order::where('user_id', $userId)

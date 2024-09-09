@@ -6,6 +6,7 @@ use App\Enum\UserRole;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\LoginRequest;
 use App\Http\Requests\RegisterRequest;
+use App\Interfaces\BusinessRepositoryInterface;
 use App\Interfaces\CardRepositoryInterface;
 use App\Models\User;
 use Illuminate\Http\JsonResponse;
@@ -17,12 +18,13 @@ class AuthController extends Controller
 {
 
     protected $cartRepository;
+    protected $businessRepository;
 
-    public function __construct(CardRepositoryInterface $cartRepository)
+    public function __construct(CardRepositoryInterface $cartRepository,BusinessRepositoryInterface $businessRepository)
     {
         $this->cartRepository = $cartRepository;
+        $this->businessRepository = $businessRepository;
     }
-
 
     public function login(LoginRequest $request)
     {
@@ -48,7 +50,7 @@ class AuthController extends Controller
             'success'=> false,
             'data' => null,
             'errors' => 'Unauthorized',
-            'message' => "Login başarısız .Lütfen mail veya password kontrol edin !",
+            'message' => "Giriş başarısız .Lütfen mail veya password kontrol edin !",
             ], 400
         );
     }
@@ -61,17 +63,21 @@ class AuthController extends Controller
             'password' => Hash::make($request['password']),
         ]);
 
-        $role = $validated['role'] ?? 'user';
+        $role = $request->validated('role');
 
-        // Eğer rol "admin" ise "user" rolünü ata (ilk başta admin olarak kayıt almak istemiyorum)
-        if ($role === UserRole::ADMIN->value) {
-            $role = 'user';
-        }
-
-        if($role === 'user')
+        if($role === UserRole::USER->value)
         {
-            // Kullanıcı oluşturulduktan sonra sepet oluştur
+            // Kullanıcı oluşturulduktan sonra sepet oluştur(Kullanıcı)
             $this->cartRepository->createCart($user->id);
+        }
+        else if($role === UserRole::COMPANY->value)
+        {
+            //Kullanıcı oluşturduktan sonra business oluştur.(Şirket)
+            $business = $this->businessRepository->create([
+                "user_id" => $user->id,
+            ]);
+        }else{
+           //
         }
 
         $user->assignRole($role);
@@ -84,7 +90,7 @@ class AuthController extends Controller
                 "user" => $user,
             ],
             'errors' => null,
-            'message' => "Register başarılı",
+            'message' => "Kayıt başarılı",
             ],200,
         );
     }
@@ -100,7 +106,7 @@ class AuthController extends Controller
             'success'=> true,
             'data' => null,
             'errors' => null,
-            'message' => "Logout başarılı",
+            'message' => "Çıkış başarılı",
             ],200,
         );
     }

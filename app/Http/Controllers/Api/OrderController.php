@@ -80,6 +80,23 @@ class OrderController extends Controller
         ], 200);
     }
 
+    public function getOrdersByBusinessId(Request $request)
+    {
+        // Yetki kontrolü, uygun olanı ekleyin
+        Gate::authorize('viewAnyCompany', Order::class);
+        $businessId = $request->user()->business->id;
+        $page = $request->input('page', 1);
+        $perPage = $request->input('per_page', 15);
+        $orders = $this->orderRepository->getOrdersByBusinessId($businessId, $page, $perPage);
+
+        return response()->json([
+            'success' => true,
+            'data' => $orders,
+            'errors' => null,
+            'message' => null
+        ]);
+    }
+
     public function getOrdersByAuthenticatedUser(Request $request)
     {
         Gate::authorize('viewAny', Order::class); 

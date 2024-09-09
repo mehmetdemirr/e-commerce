@@ -15,6 +15,15 @@ class ForgotPasswordController extends Controller
         
         $input=$request->only('email');
         $user=User::where('email',$input)->first();
+        if(!$user){
+            return response()->json([
+                'success'=> false,
+                'data' => null,
+                'errors' => "Kullanıcı bulunamadı",
+                'message' => null,
+                ], 400
+            );
+        }
         $user->notify(new ResetPasswordNotification());
         $success['succees']=true;
         return response()->json([

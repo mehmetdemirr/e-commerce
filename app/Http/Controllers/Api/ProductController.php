@@ -38,6 +38,28 @@ class ProductController extends Controller
         );
     }
 
+    /**
+     * Get products by business ID
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function getProductsByBusiness(Request $request)
+    {
+        Gate::authorize('viewAnyCompany', Product::class);
+        $businessId = $request->user()->business->id;
+        $page = $request->input('page', 1);
+        $perPage = $request->input('per_page', 15);
+
+        $products = $this->productRepository->getProductsByBusinessId($businessId, $page, $perPage);
+        return response()->json([
+            'success' => true,
+            'data' => $products,
+            'errors' => null,
+            'message' => null,
+        ], 200);
+    }
+
     public function show($id)
     {
         $product = $this->productRepository->find($id);
@@ -67,8 +89,8 @@ class ProductController extends Controller
     {
         Gate::authorize("create", Product::class);
         $validatedData = $request->validated();
-        $validatedData['user_id'] = $request->user()->id;
-                
+        $validatedData['business_id'] = $request->user()->business->id;
+                        
         $product = $this->productRepository->create($validatedData);
         return response()->json([
             'success'=> true,

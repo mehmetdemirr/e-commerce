@@ -18,6 +18,11 @@ class OrderPolicy
         return $user->hasRole(UserRole::ADMIN->value);
     }
 
+    public function viewAnyCompany(User $user): bool
+    {
+        return $user->hasRole(UserRole::COMPANY->value);
+    }
+
     public function viewAny(User $user): bool
     {
         return $user->hasRole(UserRole::USER->value);
@@ -30,7 +35,7 @@ class OrderPolicy
     {
         // Kullanıcının belirli bir siparişi görüntüleme iznine sahip olup olmadığını kontrol eder.
         return $user->id === $order->user_id || 
-                $user->company_id === $order->company_id || 
+                $user->business->user_id === $order->business_id || 
                 $user->hasRole(UserRole::ADMIN->value);
     }
 
@@ -47,7 +52,7 @@ class OrderPolicy
      */
     public function update(User $user, Order $order): bool
     {
-        return  $user->id === $order->user_id || $user->hasRole(UserRole::ADMIN->value);;
+        return $user->hasRole(UserRole::ADMIN->value);;
     }
 
     /**

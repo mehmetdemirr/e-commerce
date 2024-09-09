@@ -31,6 +31,7 @@ Route::middleware(["log"])->group(function () {
 
         Route::prefix('products')->group(function () {  //ürünler
             Route::get('/', [ProductController::class, 'index']);
+            Route::get('/company', [ProductController::class, 'getProductsByBusiness']);
             Route::get('/{id}', [ProductController::class, 'show']);
             Route::post('/', [ProductController::class, 'store']);
             Route::put('/{id}', [ProductController::class, 'update']);
@@ -73,6 +74,7 @@ Route::middleware(["log"])->group(function () {
             Route::put('/{orderId}', [OrderController::class, 'update']);
             Route::get('/', [OrderController::class, 'getOrdersByAuthenticatedUser']);
             Route::get('/user/{userId}', [OrderController::class, 'getOrdersByUserId']);
+            Route::get('/company', [OrderController::class, 'getOrdersByBusinessId']);
         });
 
         Route::prefix('/order-statuses')->group(function () {
@@ -110,7 +112,7 @@ Route::middleware(["log"])->group(function () {
     
     });
     
-    Route::middleware(["throttle:3,1"])->group(function () {
+    Route::middleware(["throttle:30,1"])->group(function () {
         Route::post('auth/login', [AuthController::class, 'login']);
         Route::post('auth/register', [AuthController::class, 'register']);
     

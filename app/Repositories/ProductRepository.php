@@ -23,6 +23,23 @@ class ProductRepository implements ProductRepositoryInterface
         ->paginate($perPage, ['*'], 'page', $page); // Use Laravel's paginate method
     }
 
+     /**
+     * Get products by business ID.
+     *
+     * @param int $businessId
+     * @param int $page
+     * @param int $perPage
+     * @return \Illuminate\Pagination\LengthAwarePaginator
+     */
+    public function getProductsByBusinessId($businessId, $page = 1, $perPage = 10)
+    {
+        return $this->model->where('business_id', $businessId)
+            ->with(['images' => function ($query) {
+                $query->where('is_main', true); // Filter for the main image
+            }])
+            ->paginate($perPage, ['*'], 'page', $page);
+    }
+
     public function find($id)
     {
         return $this->model->with('images')->find($id);

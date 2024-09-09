@@ -26,7 +26,7 @@ class RegisterRequest extends BaseRequest
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|unique:users,email|max:255',
             'password' => 'required|string|min:6|confirmed',
-            'role' => 'sometimes|string'
+            'role' => 'sometimes|string|in:user,company',
         ];
     }
 
@@ -46,6 +46,7 @@ class RegisterRequest extends BaseRequest
             'password.min' => 'The password must be at least 6 characters.',
             'password.confirmed' => 'The password confirmation does not match.',
             'role.string' => 'The role must be a string.',
+            'role.in' => 'The role must be either user or company.',
         ];
     }
 }

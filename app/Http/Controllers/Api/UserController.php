@@ -31,7 +31,7 @@ class UserController extends Controller
     public function update(UpdateUserRequest $request)
     {
         $user = $request->user();
-        // Güncelleme
+
         $user->update($request->only(['name', 'email', 'password']));
 
         // Şifreyi hash'le
