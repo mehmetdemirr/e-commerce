@@ -4,6 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\UpdateOrderRequest;
+use App\Http\Requests\UpdateOrderStatusRequest;
+use App\Http\Requests\UpdatePaymentStatusRequest;
 use App\Interfaces\OrderRepositoryInterface;
 use App\Models\Order;
 use App\Policies\OrderPolicy;
@@ -55,13 +57,35 @@ class OrderController extends Controller
         }
     }
 
-    public function update(UpdateOrderRequest $request, $orderId)
+    public function updateOrderStatus(UpdateOrderStatusRequest $request,int $orderId)
     {
         $data = $request->validated();
+        $order = $this->orderRepository->getOrderById($orderId);
+        if(!$order){
+            return response()->json([
+                'success' => false,
+                'data' => null,
+                'errors' => 'Order not found.',
+                'message' => null
+            ], 400);
+        }
+        Gate::authorize('updateOrderStatus', $order);
 
-        $order = $this->orderRepository->updateOrder($orderId, $data);
+        $order = $this->orderRepository->updateOrderStatus($orderId, $data['order_status']);
 
-        if ($order === false) {
+        return response()->json([
+            'success' => true,
+            'data' => $order,
+            'errors' => null,
+            'message' => 'Order status updated successfully.'
+        ], 200);
+    }
+
+    public function updatePaymentStatus(UpdatePaymentStatusRequest $request, $orderId)
+    {
+        $data = $request->validated();
+        $order = $this->orderRepository->getOrderById($orderId);
+        if(!$order){
             return response()->json([
                 'success' => false,
                 'data' => null,
@@ -70,13 +94,15 @@ class OrderController extends Controller
             ], 400);
         }
 
-        Gate::authorize('update', $order);
+        Gate::authorize('updatePaymentStatus', $order);
+
+        $order = $this->orderRepository->updatePaymentStatus($orderId, $data['payment_status']);
 
         return response()->json([
             'success' => true,
             'data' => $order,
             'errors' => null,
-            'message' => 'Order updated successfully.'
+            'message' => 'Payment status updated successfully.'
         ], 200);
     }
 

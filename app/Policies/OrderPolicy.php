@@ -57,6 +57,31 @@ class OrderPolicy
     }
 
     /**
+     * Determine whether the user can update the status of the order.
+     *
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Order  $order
+     * @return bool
+     */
+    public function updateOrderStatus(User $user, Order $order): bool
+    {
+        return ($user->business->user_id === $order->business_id && $user->hasRole(UserRole::COMPANY)) || 
+                $user->hasRole(UserRole::ADMIN);
+    }
+
+    /**
+     * Determine whether the user can update the payment status of the order.
+     *
+     * @param  \App\Models\User  $user
+     * @param  \App\Models\Order  $order
+     * @return bool
+     */
+    public function updatePaymentStatus(User $user, Order $order): bool
+    {
+        return $user->hasRole(UserRole::ADMIN);
+    }
+
+    /**
      * Determine whether the user can delete the model.
      */
     public function delete(User $user, Order $order): bool

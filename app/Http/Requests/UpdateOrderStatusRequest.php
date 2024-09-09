@@ -4,7 +4,7 @@ namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
 
-class UpdateOrderRequest extends BaseRequest
+class UpdateOrderStatusRequest extends BaseRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -19,17 +19,19 @@ class UpdateOrderRequest extends BaseRequest
      *
      * @return array<string, \Illuminate\Contracts\Validation\ValidationRule|array<mixed>|string>
      */
-    public function rules()
+    public function rules(): array
     {
         return [
-            'status' => 'required|string',
+            'order_status' => 'required|string|in:' . implode(',', \App\Enum\OrderStatusEnum::getStatuses()),
         ];
     }
 
     public function messages()
     {
         return [
-            'status.required' => 'Sipariş durumu belirtilmelidir.',
+            'status.string' => 'Sipariş durumu geçerli bir dize olmalıdır.',
+            'order_status.required' => 'Sipariş durumu belirtilmelidir.',
+            'order_status.in' => 'Geçersiz sipariş durumu.',
         ];
     }
 }

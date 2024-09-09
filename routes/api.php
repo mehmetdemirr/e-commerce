@@ -71,7 +71,8 @@ Route::middleware(["log"])->group(function () {
 
         Route::prefix('/orders')->group(function () { //sipariş işlemleri
             Route::post('/', [OrderController::class, 'create']);
-            Route::put('/{orderId}', [OrderController::class, 'update']);
+            Route::put('/order-status/{orderId}', [OrderController::class, 'updateOrderStatus']);
+            Route::put('/payment-status/{orderId}', [OrderController::class, 'updatePaymentStatus']);
             Route::get('/', [OrderController::class, 'getOrdersByAuthenticatedUser']);
             Route::get('/user/{userId}', [OrderController::class, 'getOrdersByUserId']);
             Route::get('/company', [OrderController::class, 'getOrdersByBusinessId']);

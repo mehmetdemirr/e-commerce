@@ -9,6 +9,8 @@ interface OrderRepositoryInterface
     public function getOrdersByAuthenticatedUser(int $userId,int $page, int $perPage);
 
     public function getOrdersByUserId(int $userId,int $page, int $perPage);
-    public function updateOrder(int $orderId, array $data);
+    public function updateOrderStatus(int $orderId, string $newStatus);
+    public function updatePaymentStatus(int $orderId, string $newPaymentStatus);
     public function getOrdersByBusinessId($businessId, $page = 1, $perPage = 10);
+    public function getOrderById(int $orderId);
 }

@@ -2,6 +2,8 @@
 
 namespace App\Repositories;
 
+use App\Enum\OrderStatusEnum;
+use App\Enum\PaymentStatusEnum;
 use App\Interfaces\OrderRepositoryInterface;
 use App\Models\Cart;
 use App\Models\Order;
@@ -84,23 +86,60 @@ class OrderRepository implements OrderRepositoryInterface
         return $orders;
     }
 
-    /**
-     * Update an existing order.
+     /**
+     * Update the status of an existing order.
      *
      * @param int $orderId
-     * @param array $data
+     * @param string $newStatus
      * @return \App\Models\Order|bool
      */
-    public function updateOrder(int $orderId, array $data)
+    public function updateOrderStatus(int $orderId, string $newStatus)
     {
         $order = Order::find($orderId);
 
         if (!$order) {
-            return false; // Sipariş bulunamadı
+            return false; // Order not found
         }
 
-        // Sipariş verilerini güncelle
-        $order->update($data);
+        $currentStatus = OrderStatusEnum::fromString($order->order_status);
+        $newStatusEnum = OrderStatusEnum::fromString($newStatus);
+
+        if (!OrderStatusEnum::canUpdateStatus($currentStatus, $newStatusEnum)) {
+            return false; // Status update not allowed
+        }
+
+        // Update the order status
+        $order->order_status = $newStatus;
+        $order->save();
+
+        return $order;
+    }
+
+    /**
+     * Update the payment status of an existing order.
+     *
+     * @param int $orderId
+     * @param string $newPaymentStatus
+     * @return \App\Models\Order|bool
+     */
+    public function updatePaymentStatus(int $orderId, string $newPaymentStatus)
+    {
+        $order = Order::find($orderId);
+
+        if (!$order) {
+            return false; // Order not found
+        }
+
+        $currentPaymentStatus = PaymentStatusEnum::fromString($order->payment_status);
+        $newPaymentStatusEnum = PaymentStatusEnum::fromString($newPaymentStatus);
+
+        if (!PaymentStatusEnum::canUpdateStatus($currentPaymentStatus, $newPaymentStatusEnum)) {
+            return false; // Payment status update not allowed
+        }
+
+        // Update the payment status
+        $order->payment_status = $newPaymentStatus;
+        $order->save();
 
         return $order;
     }
@@ -132,5 +171,17 @@ class OrderRepository implements OrderRepositoryInterface
         return Order::where('user_id', $userId)
             ->with('items.product', 'orderStatus', 'paymentStatus')
             ->paginate($perPage, ['*'], 'page', $page);
+    }
+
+    /**
+     * Get an order by its ID.
+     *
+     * @param int $orderId
+     * @return \App\Models\Order|null
+     */
+    public function getOrderById(int $orderId)
+    {
+        $order = Order::find($orderId);
+        return $order;
     }
 }
