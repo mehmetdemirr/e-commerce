@@ -19,13 +19,6 @@ enum PaymentStatusEnum : string
         ];
     }
 
-    private static array $statusTransitions = [
-        self::PENDING => [self::FAILED, self::PAID],
-        self::FAILED => [self::PENDING, self::PAID],
-        self::PAID => [],
-        self::REFUNDED => [],
-    ];
-
     public static function fromString(string $status): self
     {
         $statuses = array_flip(self::getStatuses());
@@ -37,9 +30,21 @@ enum PaymentStatusEnum : string
         return self::from($statuses[$status]);
     }
 
-    public static function canUpdateStatus(PaymentStatusEnum $currentStatus, PaymentStatusEnum $newStatus): bool
+    public static function canUpdateStatus(self $currentStatus, self $newStatus): bool
     {
-        return in_array($newStatus->value, self::$statusTransitions[$currentStatus->value], true);
+        return in_array($newStatus->value, self::getAllowedTransitions($currentStatus->value), true);
+    }
+
+    private static function getAllowedTransitions(string $currentStatus): array
+    {
+        $transitions = [
+            self::PENDING => [self::PAID, self::FAILED],
+            self::PAID => [self::REFUNDED],
+            self::FAILED => [self::PAID],
+            self::REFUNDED => [],
+        ];
+
+        return $transitions[$currentStatus] ?? [];
     }
 
 }

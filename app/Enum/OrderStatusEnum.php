@@ -23,15 +23,6 @@ enum OrderStatusEnum : string
         ];
     }
 
-    private static array $statusTransitions = [
-        self::PENDING => [self::CONFIRMED],
-        self::CONFIRMED => [self::SHIPPED],
-        self::SHIPPED => [self::DELIVERED, self::RETURNED],
-        self::DELIVERED => [self::RETURNED],
-        self::RETURNED => [],
-        self::CANCELED => []
-    ];
-
     public static function fromString(string $status): self
     {
         $statuses = array_flip(self::getStatuses());
@@ -43,13 +34,23 @@ enum OrderStatusEnum : string
         return self::from($statuses[$status]);
     }
 
-    public static function canUpdateStatus(OrderStatusEnum $currentStatus, OrderStatusEnum $newStatus): bool
+    public static function canUpdateStatus(self $currentStatus, self $newStatus): bool
     {
-        if ($currentStatus === self::CANCELED || $currentStatus === self::RETURNED) {
-            return false;
-        }
+        return in_array($newStatus->value, self::getAllowedTransitions($currentStatus->value), true);
+    }
 
-        return in_array($newStatus, self::$statusTransitions[$currentStatus->value], true);
+    private static function getAllowedTransitions(string $currentStatus): array
+    {
+        $transitions = [
+            self::PENDING => [self::CONFIRMED],
+            self::CONFIRMED => [self::SHIPPED],
+            self::SHIPPED => [self::DELIVERED],
+            self::DELIVERED => [self::RETURNED],
+            self::RETURNED => [],
+            self::CANCELED => [],
+        ];
+
+        return $transitions[$currentStatus] ?? [];
     }
 
 }

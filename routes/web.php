@@ -3,10 +3,6 @@
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
 
-// Route::get('/', function () {
-//     return view('welcome');
-// });
-
 
 // Diğer statik dosyalar için
 Route::get('/storage/{any}', function ($path) {

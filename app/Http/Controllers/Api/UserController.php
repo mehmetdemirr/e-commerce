@@ -19,13 +19,18 @@ class UserController extends Controller
     public function user(Request $request)
     {
         $this->logService->logWarning('Kullanıcı bilgisi');
+        // Kullanıcıyı rollerle birlikte yükle
+        $user = $request->user()->load('roles');
+
         return response()->json([
             'success'=> true,
-            'data' => $request->user(),
+            'data' => [
+                'user' => $user,
+                'roles' => $user->getRoleNames(),
+            ],
             'errors' => null,
             'message' => null,
-            ], 200
-        );
+        ], 200);
     }
 
     public function update(UpdateUserRequest $request)

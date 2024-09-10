@@ -1,8 +1,8 @@
 /** @type {import('tailwindcss').Config} */
 export default {
-  content: ['./index.html', './src/**/*.{vue,js,ts,jsx,tsx}'],
   darkMode: 'class', // or 'media' or 'class'
   content: [
+     "./node_modules/flowbite/**/*.js",
     "./resources/**/*.blade.php",
     "./resources/**/*.js",
     "./resources/**/*.vue",
@@ -11,6 +11,7 @@ export default {
     extend: {},
   },
   plugins: [
+    require('flowbite/plugin')
   ],
 }
 

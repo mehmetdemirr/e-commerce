@@ -17,7 +17,12 @@ class ResetPasswordController extends Controller
     public function resetPassword(ResetPasswordRequest $request){
         $otp2=$this->otp->validate($request->email,$request->otp);
         if(! $otp2->status){
-            return response()->json(['error'=>$otp2],401);
+            return response()->json([
+                'success' => false,
+                'data' => null,
+                'errors' => $otp2,
+                'message' => null,
+            ], 400);
 
         }
         $user=User::where('email',$request->email)->first();
@@ -27,7 +32,11 @@ class ResetPasswordController extends Controller
             ]
         );
        $user->tokens()->delete();
-        $success['succees']=true;
-        return response()->json($success,200);
+        return response()->json([
+            'success' => true,
+            'data' => null,
+            'errors' => null,
+            'message' => null,
+        ], 200);
     }
 }

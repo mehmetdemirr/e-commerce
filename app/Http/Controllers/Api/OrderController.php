@@ -69,6 +69,7 @@ class OrderController extends Controller
                 'message' => null
             ], 400);
         }
+        
         Gate::authorize('updateOrderStatus', $order);
 
         $order = $this->orderRepository->updateOrderStatus($orderId, $data['order_status']);

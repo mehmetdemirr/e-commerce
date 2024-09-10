@@ -33,12 +33,14 @@ class AuthController extends Controller
         if ($loginUser) {
             if (Auth::attempt($credentials)) {
                 $user = Auth::user();
+                $user = $request->user()->load('roles');
                 $token = $loginUser->createToken('token')->plainTextToken;
                 return response()->json([
                     'success'=> true,
                     'data' => [
                         "token"=> $token,
                         "user"=> $user,
+                        "roles" => $user->getRoleNames(),
                     ],
                     'errors' => null,
                     'message' => "Login başarılı",

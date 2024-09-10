@@ -25,7 +25,6 @@ class ForgotPasswordController extends Controller
             );
         }
         $user->notify(new ResetPasswordNotification());
-        $success['succees']=true;
         return response()->json([
             'success'=> true,
             'data' => null,
