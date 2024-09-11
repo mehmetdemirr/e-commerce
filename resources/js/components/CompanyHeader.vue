@@ -39,6 +39,7 @@
   const router = useRouter();
   
   const logout = async () => {
+    console.log("çıkış yap");
     try {
       await apiLogout(); // Çıkış yapma işlemi
       // Token'ı ve diğer kullanıcı bilgilerini temizle

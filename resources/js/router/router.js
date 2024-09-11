@@ -11,9 +11,9 @@ const routes = [
         children: [
           { path: 'login', name: 'login', component: () => import('../views/Auth/LoginView.vue') },
           { path: 'register', name: 'register', component: () => import('../views/Auth/UserRegisterView.vue') },
-          { path: 'company/register', name: 'company-register', component: () => import('../views/Auth/companyRegisterView.vue') },
-          { path: 'password-forgot', name: 'password-forgot', component: () => import('../views/Auth/passwordForgotView.vue') },
-          { path: 'password-reset', name: 'password-reset', component: () => import('../views/Auth/passwordResetView.vue') } 
+          { path: 'company/register', name: 'company-register', component: () => import('../views/Auth/CompanyRegisterView.vue') },
+          { path: 'password-forgot', name: 'password-forgot', component: () => import('../views/Auth/PasswordForgotView.vue') },
+          { path: 'password-reset', name: 'password-reset', component: () => import('../views/Auth/PasswordResetView.vue') } 
         ]
      },
      {
@@ -29,6 +29,7 @@ const routes = [
         children: [
           { path: '', name: 'company-home', component: () => import('../views/Company/HomeView.vue') },
           { path: 'products', name: 'company-products', component: () => import('../views/Company/Product/ProductView.vue') },
+          { path: 'products/add', name: 'company-add-product', component: () => import('../views/Company/Product/ProductAddView.vue') },
           { path: 'customers', name: 'company-customers', component: () => import('../views/Company/CustomerView.vue') },
           { path: 'orders', name: 'company-orders', component: () => import('../views/Company/OrderView.vue') },
         ]

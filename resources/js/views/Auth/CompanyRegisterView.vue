@@ -59,22 +59,31 @@
   
   <script setup>
   import { ref } from 'vue';
+  import { register } from '../../services/authService';
+  import { showError, showSuccess } from '../../services/alertService';
   
   const name = ref('');
   const email = ref('');
   const password = ref('');
   const passwordAgain = ref('');
   
-  const submitRegister = () => {
+  const submitRegister = async () => {
     // Kayıt işlemleri burada yapılabilir
     console.log('Name:', name.value);
     console.log('Email:', email.value);
     console.log('Password:', password.value);
     console.log('Password Again:', passwordAgain.value);
-  };
+  try {
+    const response = await register(name.value,email.value, password.value,passwordAgain.value,"company");
+    console.log(response);
+    if (response.success) {
+      showSuccess('Kayıt Başarılı!');
+      router.push({name:"login"});
+    } else {
+      showError('Giriş başarısız. Giriş bilgilerini kontrol ediniz!');
+    }
+  } catch (error) {
+    showError(`Giriş başarısız. Giriş bilgilerini kontrol ediniz!`);
+  }
+};
   </script>
-  
-  <style scoped>
-
-  </style>
-  

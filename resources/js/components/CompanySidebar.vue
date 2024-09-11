@@ -125,17 +125,16 @@ import { onMounted } from 'vue';
 
 const route = useRoute();
 
-onMounted(() => {
-  // Burada isActive fonksiyonunu çağırabilirsiniz veya başka işlemler yapabilirsiniz
-  console.log('Component is mounted, current route name:', route.path == "/company/products");
-});
+// onMounted(() => {
+//   // Burada isActive fonksiyonunu çağırabilirsiniz veya başka işlemler yapabilirsiniz
+//   console.log('Component is mounted, current route name:', route.path == "/company/products");
+// });
 
 const routes = {
   dashboard: '/company',
   products: '/company/products',
   customers: '/company/customers',
   orders: '/company/orders',
-  invoice: '/invoice',
 };
 
 const isActive = (path) => {
